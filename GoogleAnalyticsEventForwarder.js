@@ -34,7 +34,19 @@
             isEnhancedEcommerceLoaded = false,
             forwarderSettings,
             reportingService,
-            trackerId = null;
+            trackerId = null,
+            eventLevelMap = {
+                customDimensions: {},
+                customMetrics: {}
+            },
+            userLevelMap = {
+                customDimensions: {},
+                customMetrics: {}
+            },
+            productLevelMap = {
+                customDimensions: {},
+                customMetrics: {}
+            };
 
         self.name = name;
 
@@ -51,11 +63,53 @@
             return mParticle.EventType.getName(eventType);
         }
 
+        function formatDimensionOrMetric(attr) {
+            return attr.replace(/ /g, '').toLowerCase();
+        }
+
+        function applyCustomDimensionsAndMetrics(event, outputDimensionsAndMetrics) {
+            // apply custom dimensions and metrics to each event, product, or user if respective attributes exist
+            if (event.EventAttributes && Object.keys(event.EventAttributes).length) {
+                applyCustomDimensionsMetricsForSourceAttributes(event.EventAttributes, outputDimensionsAndMetrics, eventLevelMap);
+            }
+
+            if (event.UserAttributes && Object.keys(event.UserAttributes).length) {
+                applyCustomDimensionsMetricsForSourceAttributes(event.UserAttributes, outputDimensionsAndMetrics, userLevelMap);
+            }
+
+            if (event.ProductAction && event.ProductAction.ProductList.length) {
+                event.ProductAction.ProductList.forEach(function(product) {
+                    applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, outputDimensionsAndMetrics, userLevelMap);
+                });
+            }
+        }
+
+        function applyCustomDimensionsMetricsForSourceAttributes(attributes, targetDimensionsAndMetrics, mapLevel) {
+            for (var cdKey in mapLevel.customDimensions) {
+                for (attrName in attributes) {
+                    if (mapLevel.customDimensions[cdKey] === attrName) {
+                        targetDimensionsAndMetrics[cdKey] = attributes[attrName];
+                    }
+                }
+            }
+
+            for (var cmKey in mapLevel.customMetrics) {
+                for (attrName in attributes) {
+                    if (mapLevel.customMetrics[cmKey] === attrName) {
+                        targetDimensionsAndMetrics[cmKey] = attributes[attrName];
+                    }
+                }
+            }
+        }
+
         function processEvent(event) {
+            var outputDimensionsAndMetrics = {};
             var reportEvent = false;
 
             if (isInitialized) {
                 event.ExpandedEventCount = 0;
+
+                applyCustomDimensionsAndMetrics(event, outputDimensionsAndMetrics);
 
                 try {
                     if (event.EventDataType == MessageType.PageView) {
@@ -63,17 +117,17 @@
                         reportEvent = true;
                     }
                     else if (event.EventDataType == MessageType.Commerce) {
-                        logCommerce(event);
+                        logCommerce(event, outputDimensionsAndMetrics);
                         reportEvent = true;
                     }
                     else if (event.EventDataType == MessageType.PageEvent) {
                         reportEvent = true;
 
                         if (event.EventCategory == window.mParticle.EventType.Transaction) {
-                            logTransaction(event);
+                            logTransaction(event, outputDimensionsAndMetrics);
                         }
                         else {
-                            logEvent(event);
+                            logEvent(event, outputDimensionsAndMetrics);
                         }
                     }
 
@@ -131,11 +185,11 @@
             });
         }
 
-        function sendEcommerceEvent(type) {
-            ga(createCmd('send'), 'event', 'eCommerce', getEventTypeName(type));
+        function sendEcommerceEvent(type, outputDimensionsAndMetrics) {
+            ga(createCmd('send'), 'event', 'eCommerce', getEventTypeName(type), outputDimensionsAndMetrics);
         }
 
-        function logCommerce(data) {
+        function logCommerce(data, outputDimensionsAndMetrics) {
             if (!isEnhancedEcommerceLoaded) {
                 ga(createCmd('require'), 'ec');
                 isEnhancedEcommerceLoaded = true;
@@ -155,7 +209,7 @@
                     });
                 });
 
-                sendEcommerceEvent(data.EventDataType);
+                sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
             }
             else if (data.PromotionAction) {
                 // Promotion event
@@ -172,7 +226,7 @@
                     ga(createCmd('ec:setAction'), 'promo_click');
                 }
 
-                sendEcommerceEvent(data.EventDataType);
+                sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
             }
             else if (data.ProductAction) {
                 if (data.ProductAction.ProductActionType == mParticle.ProductActionType.Purchase) {
@@ -189,7 +243,7 @@
                         coupon: data.ProductAction.CouponCode
                     });
 
-                    sendEcommerceEvent(data.EventDataType);
+                    sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
                 }
                 else if (data.ProductAction.ProductActionType == mParticle.ProductActionType.Refund) {
                     if(data.ProductAction.ProductList.length > 0) {
@@ -205,7 +259,7 @@
                         id: data.ProductAction.TransactionId
                     });
 
-                    sendEcommerceEvent(data.EventDataType);
+                    sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
                 }
                 else if (data.ProductAction.ProductActionType == mParticle.ProductActionType.AddToCart ||
                     data.ProductAction.ProductActionType == mParticle.ProductActionType.RemoveFromCart) {
@@ -217,7 +271,7 @@
                     ga(createCmd('ec:setAction'),
                         data.ProductAction.ProductActionType == mParticle.ProductActionType.AddToCart ? 'add' : 'remove');
 
-                    sendEcommerceEvent(data.EventDataType);
+                    sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
                 }
                 else if (data.ProductAction.ProductActionType == mParticle.ProductActionType.Checkout) {
                     data.ProductAction.ProductList.forEach(function (product) {
@@ -229,7 +283,7 @@
                         option: data.ProductAction.CheckoutOptions
                     });
 
-                    sendEcommerceEvent(data.EventDataType);
+                    sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
                 }
                 else if (data.ProductAction.ProductActionType == mParticle.ProductActionType.Click) {
                     data.ProductAction.ProductList.forEach(function (product) {
@@ -237,7 +291,7 @@
                     });
 
                     ga(createCmd('ec:setAction'), 'click');
-                    sendEcommerceEvent(data.EventDataType);
+                    sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
                 }
                 else if (data.ProductAction.ProductActionType == mParticle.ProductActionType.ViewDetail) {
 
@@ -246,21 +300,21 @@
                     });
 
                     ga(createCmd('ec:setAction'), 'detail');
-                    ga(createCmd('send'), 'event', 'eCommerce', getEventTypeName(data.EventCategory));
+                    ga(createCmd('send'), 'event', 'eCommerce', getEventTypeName(data.EventCategory), outputDimensionsAndMetrics);
                 }
             }
         }
 
-        function logPageView() {
+        function logPageView(outputDimensionsAndMetrics) {
             if (forwarderSettings.classicMode == 'True') {
                 _gaq.push(['_trackPageview']);
             }
             else {
-                ga(createCmd('send'), 'pageview');
+                ga(createCmd('send'), 'pageview', outputDimensionsAndMetrics);
             }
         }
 
-        function logEvent(data) {
+        function logEvent(data, outputDimensionsAndMetrics) {
             var label = '',
                 category = getEventTypeName(data.EventCategory),
                 value;
@@ -316,11 +370,12 @@
                     category,
                     data.EventName,
                     label,
-                    value);
+                    value,
+                    outputDimensionsAndMetrics);
             }
         }
 
-        function logTransaction(data) {
+        function logTransaction(data, outputDimensionsAndMetrics) {
             if (!data.EventAttributes ||
                 !data.EventAttributes.$MethodName ||
                 !data.EventAttributes.$MethodName === 'LogEcommerceTransaction') {
@@ -382,7 +437,14 @@
                     });
                 }
 
-                ga(createCmd('ecommerce:send'));
+                ga(createCmd('ecommerce:send'), outputDimensionsAndMetrics);
+            }
+        }
+
+        function checkForDuplicateMapping(dimensionOrMetric, eventLevelMap) {
+            var existingMapper = eventLevelMap['customDimensions'][formatDimensionOrMetric(dimensionOrMetric.value)];
+            if (existingMapper) {
+                logdebugger('Warning: both ' + existingMapper + ' & ' + dimensionOrMetric.map + ' are mapped to ' + dimensionOrMetric.value + '. ' + dimensionOrMetric.map + ' is replacing ' + existingMapper + '. If this is a mistake, please revisit the Google Analytics settings at app.mparticle.com. Otherwise, please ignore this warning.');
             }
         }
 
@@ -448,10 +510,40 @@
                     if (forwarderSettings.useSecure == 'True') {
                         ga(createCmd('set'), 'forceSSL', true);
                     }
+                    if (forwarderSettings.customDimensions) {
+                        var customDimensions = JSON.parse(forwarderSettings.customDimensions.replace(/&quot;/g, '\"'));
+                        customDimensions.forEach(function(dimension) {
+                            if (dimension.maptype === 'EventAttributeClass.Name') {
+                                checkForDuplicateMapping(dimension, eventLevelMap);
+                                eventLevelMap['customDimensions'][formatDimensionOrMetric(dimension.value)] = dimension.map;
+                            } else if (dimension.maptype === 'UserAttributeClass.Name') {
+                                checkForDuplicateMapping(dimension, userLevelMap);
+                                userLevelMap['customDimensions'][formatDimensionOrMetric(dimension.value)] = dimension.map;
+                            } else if (dimension.maptype === 'ProductAttributeClass.Name') {
+                                checkForDuplicateMapping(dimension, productLevelMap);
+                                productLevelMap['customDimensions'][formatDimensionOrMetric(dimension.value)] = dimension.map;
+                            }
+                        });
+                    }
+
+                    if (forwarderSettings.customMetrics) {
+                        var customMetrics = JSON.parse(forwarderSettings.customMetrics.replace(/&quot;/g, '\"'));
+                        customMetrics.forEach(function(metric) {
+                            if (metric.maptype === 'EventAttributeClass.Name') {
+                                checkForDuplicateMapping(metric, eventLevelMap);
+                                eventLevelMap['customMetrics'][formatDimensionOrMetric(metric.value)] = metric.map;
+                            } else if (metric.maptype === 'UserAttributeClass.Name') {
+                                checkForDuplicateMapping(metric, userLevelMap);
+                                userLevelMap['customMetrics'][formatDimensionOrMetric(metric.value)] = metric.map;
+                            } else if (metric.maptype === 'ProductAttributeClass.Name') {
+                                checkForDuplicateMapping(metric, productLevelMap);
+                                productLevelMap['customMetrics'][formatDimensionOrMetric(metric.value)] = metric.map;
+                            }
+                        });
+                    }
                 }
 
                 isInitialized = true;
-
                 return 'Successfully initialized: ' + name;
             }
             catch (e) {
