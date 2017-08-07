@@ -14,7 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-(function (window) {
+(function(window) {
     var name = 'GoogleAnalyticsEventForwarder',
         MessageType = {
             SessionStart: 1,
@@ -27,7 +27,7 @@
         },
         trackerCount = 1;
 
-    var constructor = function () {
+    var constructor = function() {
         var self = this,
             isInitialized = false,
             isEcommerceLoaded = false,
@@ -75,12 +75,6 @@
 
             if (event.UserAttributes && Object.keys(event.UserAttributes).length) {
                 applyCustomDimensionsMetricsForSourceAttributes(event.UserAttributes, outputDimensionsAndMetrics, userLevelMap);
-            }
-
-            if (event.ProductAction && event.ProductAction.ProductList.length) {
-                event.ProductAction.ProductList.forEach(function(product) {
-                    applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, outputDimensionsAndMetrics, userLevelMap);
-                });
             }
         }
 
@@ -161,8 +155,8 @@
             }
         }
 
-        function addEcommerceProduct(product) {
-            ga(createCmd('ec:addProduct'), {
+        function addEcommerceProduct(product, updatedProductDimentionAndMetrics) {
+            var productAttrs = {
                 id: product.Sku,
                 name: product.Name,
                 category: product.Category,
@@ -171,7 +165,15 @@
                 price: product.Price,
                 coupon: product.CouponCode,
                 quantity: product.Quantity
-            });
+            };
+
+            for (var attr in updatedProductDimentionAndMetrics) {
+                if (updatedProductDimentionAndMetrics.hasOwnProperty(attr)) {
+                    productAttrs[attr] = updatedProductDimentionAndMetrics[attr];
+                }
+            }
+
+            ga(createCmd('ec:addProduct'), productAttrs);
         }
 
         function addEcommerceProductImpression(product) {
@@ -202,9 +204,8 @@
 
             if (data.ProductImpressions) {
                 // Impression event
-
-                data.ProductImpressions.forEach(function (impression) {
-                    impression.ProductList.forEach(function (product) {
+                data.ProductImpressions.forEach(function(impression) {
+                    impression.ProductList.forEach(function(product) {
                         addEcommerceProductImpression(product);
                     });
                 });
@@ -230,8 +231,10 @@
             }
             else if (data.ProductAction) {
                 if (data.ProductAction.ProductActionType == mParticle.ProductActionType.Purchase) {
-                    data.ProductAction.ProductList.forEach(function (product) {
-                        addEcommerceProduct(product);
+                    data.ProductAction.ProductList.forEach(function(product) {
+                        var updatedProductDimentionAndMetrics = {};
+                        applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
+                        addEcommerceProduct(product, updatedProductDimentionAndMetrics);
                     });
 
                     ga(createCmd('ec:setAction'), 'purchase', {
@@ -246,12 +249,14 @@
                     sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
                 }
                 else if (data.ProductAction.ProductActionType == mParticle.ProductActionType.Refund) {
-                    if(data.ProductAction.ProductList.length > 0) {
-                        data.ProductAction.ProductList.forEach(function (product) {
-                            ga(createCmd('ec:addProduct'), {
+                    if (data.ProductAction.ProductList.length) {
+                        data.ProductAction.ProductList.forEach(function(product) {
+                            var productAttrs = {
                                 id: product.Sku,
                                 quantity: product.Quantity
-                            });
+                            };
+                            applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, productAttrs, productLevelMap);
+                            ga(createCmd('ec:addProduct'), productAttrs);
                         });
                     }
 
@@ -263,9 +268,10 @@
                 }
                 else if (data.ProductAction.ProductActionType == mParticle.ProductActionType.AddToCart ||
                     data.ProductAction.ProductActionType == mParticle.ProductActionType.RemoveFromCart) {
-
-                    data.ProductAction.ProductList.forEach(function (product) {
-                        addEcommerceProduct(product);
+                    var updatedProductDimentionAndMetrics = {};
+                    data.ProductAction.ProductList.forEach(function(product) {
+                        applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
+                        addEcommerceProduct(product, updatedProductDimentionAndMetrics);
                     });
 
                     ga(createCmd('ec:setAction'),
@@ -274,8 +280,10 @@
                     sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
                 }
                 else if (data.ProductAction.ProductActionType == mParticle.ProductActionType.Checkout) {
-                    data.ProductAction.ProductList.forEach(function (product) {
-                        addEcommerceProduct(product);
+                    data.ProductAction.ProductList.forEach(function(product) {
+                        var updatedProductDimentionAndMetrics = {};
+                        applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
+                        addEcommerceProduct(product, updatedProductDimentionAndMetrics);
                     });
 
                     ga(createCmd('ec:setAction'), 'checkout', {
@@ -286,17 +294,20 @@
                     sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
                 }
                 else if (data.ProductAction.ProductActionType == mParticle.ProductActionType.Click) {
-                    data.ProductAction.ProductList.forEach(function (product) {
-                        addEcommerceProduct(product);
+                    data.ProductAction.ProductList.forEach(function(product) {
+                        var updatedProductDimentionAndMetrics = {};
+                        applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
+                        addEcommerceProduct(product, updatedProductDimentionAndMetrics);
                     });
 
                     ga(createCmd('ec:setAction'), 'click');
                     sendEcommerceEvent(data.EventDataType, outputDimensionsAndMetrics);
                 }
                 else if (data.ProductAction.ProductActionType == mParticle.ProductActionType.ViewDetail) {
-
-                    data.ProductAction.ProductList.forEach(function (product) {
-                        addEcommerceProduct(product);
+                    data.ProductAction.ProductList.forEach(function(product) {
+                        var updatedProductDimentionAndMetrics = {};
+                        applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
+                        addEcommerceProduct(product );
                     });
 
                     ga(createCmd('ec:setAction'), 'detail');
@@ -471,7 +482,7 @@
                             window._gaq.push(['_setDomainName', 'none']);
                         }
 
-                        (function () {
+                        (function() {
                             var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
                             if (forwarderSettings.useDisplayFeatures == 'True') {
                                 ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
@@ -484,8 +495,8 @@
                 }
                 else {
                     if(testMode !== true) {
-                        (function (i, s, o, g, r, a, m) {
-                            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                        (function(i, s, o, g, r, a, m) {
+                            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function() {
                                 (i[r].q = i[r].q || []).push(arguments);
                             }, i[r].l = 1 * new Date(); a = s.createElement(o),
                             m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m);

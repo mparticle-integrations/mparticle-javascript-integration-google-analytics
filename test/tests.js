@@ -202,6 +202,12 @@ describe('Google Analytics Forwarder', function () {
         window.googleanalytics.args[1][1].should.have.property('price', 400);
         window.googleanalytics.args[1][1].should.have.property('coupon', null);
         window.googleanalytics.args[1][1].should.have.property('quantity', 1);
+        window.googleanalytics.args[1][1].should.have.property('dimension1', 'blue');
+        window.googleanalytics.args[1][1].should.have.property('dimension2', 'female');
+        window.googleanalytics.args[1][1].should.have.property('dimension3', 'large');
+        window.googleanalytics.args[1][1].should.have.property('metric1', 1);
+        window.googleanalytics.args[1][1].should.have.property('metric2', 15);
+        window.googleanalytics.args[1][1].should.have.property('metric3', 3);
 
         window.googleanalytics.args[2][0].should.equal('tracker-name.ec:setAction');
         window.googleanalytics.args[2][1].should.equal('purchase');
@@ -217,12 +223,6 @@ describe('Google Analytics Forwarder', function () {
         window.googleanalytics.args[3][2].should.equal('eCommerce');
         window.googleanalytics.args[3][3].should.equal('blahblah');
 
-        window.googleanalytics.args[3][4].should.have.property('dimension1', 'blue');
-        window.googleanalytics.args[3][4].should.have.property('dimension2', 'female');
-        window.googleanalytics.args[3][4].should.have.property('dimension3', 'large');
-        window.googleanalytics.args[3][4].should.have.property('metric1', 1);
-        window.googleanalytics.args[3][4].should.have.property('metric2', 15);
-        window.googleanalytics.args[3][4].should.have.property('metric3', 3);
 
         done();
     });
