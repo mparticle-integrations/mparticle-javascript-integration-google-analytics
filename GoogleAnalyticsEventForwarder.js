@@ -391,7 +391,7 @@
                 !data.EventAttributes.$MethodName ||
                 !data.EventAttributes.$MethodName === 'LogEcommerceTransaction') {
                 // User didn't use logTransaction method, so just log normally
-                logEvent(data);
+                logEvent(data, outputDimensionsAndMetrics);
                 return;
             }
 
@@ -455,7 +455,7 @@
         function checkForDuplicateMapping(dimensionOrMetric, eventLevelMap) {
             var existingMapper = eventLevelMap['customDimensions'][formatDimensionOrMetric(dimensionOrMetric.value)];
             if (existingMapper) {
-                logdebugger('Warning: both ' + existingMapper + ' & ' + dimensionOrMetric.map + ' are mapped to ' + dimensionOrMetric.value + '. ' + dimensionOrMetric.map + ' is replacing ' + existingMapper + '. If this is a mistake, please revisit the Google Analytics settings at app.mparticle.com. Otherwise, please ignore this warning.');
+                console.log('Warning: both ' + existingMapper + ' & ' + dimensionOrMetric.map + ' are mapped to ' + dimensionOrMetric.value + '. ' + dimensionOrMetric.map + ' is replacing ' + existingMapper + '. If this is a mistake, please revisit the Google Analytics settings at app.mparticle.com. Otherwise, please ignore this warning.');
             }
         }
 
