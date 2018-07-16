@@ -25,7 +25,8 @@
             OptOut: 6,
             Commerce: 16
         },
-        trackerCount = 1;
+        trackerCount = 1,
+        nonInteractionFlag = 'Google.nonInteraction';
 
     var constructor = function() {
         var self = this,
@@ -96,6 +97,12 @@
             }
         }
 
+        function applyCustomFlags(flags, outputDimensionsAndMetrics) {
+            if (flags.hasOwnProperty(nonInteractionFlag)) {
+                outputDimensionsAndMetrics['nonInteraction'] = flags[nonInteractionFlag];
+            }
+        }
+
         function processEvent(event) {
             var outputDimensionsAndMetrics = {};
             var reportEvent = false;
@@ -104,6 +111,10 @@
                 event.ExpandedEventCount = 0;
 
                 applyCustomDimensionsAndMetrics(event, outputDimensionsAndMetrics);
+
+                if (event.CustomFlags && Object.keys(event.CustomFlags).length) {
+                    applyCustomFlags(event.CustomFlags, outputDimensionsAndMetrics);
+                }
 
                 try {
                     if (event.EventDataType == MessageType.PageView) {
