@@ -26,7 +26,10 @@
             Commerce: 16
         },
         trackerCount = 1,
-        nonInteractionFlag = 'Google.nonInteraction';
+        NON_INTERACTION_FLAG = 'Google.NonInteraction',
+        CATEGORY = 'Google.Category',
+        LABEL = 'Google.Label',
+        VALUE = 'Google.Value';
 
     var constructor = function() {
         var self = this,
@@ -98,8 +101,8 @@
         }
 
         function applyCustomFlags(flags, outputDimensionsAndMetrics) {
-            if (flags.hasOwnProperty(nonInteractionFlag)) {
-                outputDimensionsAndMetrics['nonInteraction'] = flags[nonInteractionFlag];
+            if (flags.hasOwnProperty(NON_INTERACTION_FLAG)) {
+                outputDimensionsAndMetrics['nonInteraction'] = flags[NON_INTERACTION_FLAG];
             }
         }
 
@@ -361,9 +364,9 @@
             }
 
             if(data.CustomFlags) {
-                var googleCategory = data.CustomFlags['Google.Category'],
-                    googleLabel = data.CustomFlags['Google.Label'],
-                    googleValue = parseInt(data.CustomFlags['Google.Value'], 10);
+                var googleCategory = data.CustomFlags[CATEGORY],
+                    googleLabel = data.CustomFlags[LABEL],
+                    googleValue = parseInt(data.CustomFlags[VALUE], 10);
 
                 if (googleCategory) {
                     category = googleCategory;

@@ -276,7 +276,7 @@ describe('Google Analytics Forwarder', function () {
                 ]
             },
             CustomFlags: {
-                'Google.nonInteraction': true
+                'Google.NonInteraction': true
             }
         });
 
