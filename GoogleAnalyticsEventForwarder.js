@@ -336,8 +336,8 @@
                 _gaq.push(['_trackPageview']);
             }
             else {
-                if (event.CustomFlags && data.CustomFlags[PAGE]) {
-                    ga(createCmd('set'), 'page', data.CustomFlags[PAGE]);
+                if (event.CustomFlags && event.CustomFlags[PAGE]) {
+                    ga(createCmd('set'), 'page', event.CustomFlags[PAGE]);
                 }
                 ga(createCmd('send'), 'pageview', outputDimensionsAndMetrics);
             }
