@@ -521,13 +521,21 @@
                         })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
                     }
 
+                    var fieldsObject = {
+                        trackingId:forwarderSettings.apiKey,
+                        name: trackerId
+                    };
+
                     if (forwarderSettings.useLocalhostCookie == 'True') {
-                        ga('create', {
-                            trackingId: forwarderSettings.apiKey,
-                            cookieDomain: 'none',
-                            name: trackerId
-                        });
+                        fieldsObject.cookieDomain = 'none';
+
+                        ga('create', fieldsObject);
+                    } else if (forwarderSettings.useAmpClientId == 'True') {
+                        fieldsObject.useAmpClientId = true;
+
+                        ga('create', fieldsObject);
                     }
+
                     else {
                         ga('create', forwarderSettings.apiKey, 'auto', trackerId);
                     }
