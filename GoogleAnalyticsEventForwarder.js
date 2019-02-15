@@ -528,17 +528,13 @@
 
                     if (forwarderSettings.useLocalhostCookie == 'True') {
                         fieldsObject.cookieDomain = 'none';
+                    }
 
-                        ga('create', fieldsObject);
-                    } else if (forwarderSettings.useAmpClientId == 'True') {
+                    if (forwarderSettings.useAmpClientId == 'True') {
                         fieldsObject.useAmpClientId = true;
-
-                        ga('create', fieldsObject);
                     }
 
-                    else {
-                        ga('create', forwarderSettings.apiKey, 'auto', trackerId);
-                    }
+                    ga('create', fieldsObject);
 
                     if (forwarderSettings.useDisplayFeatures == 'True') {
                         ga(createCmd('require'), 'displayfeatures');

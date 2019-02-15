@@ -131,6 +131,7 @@ describe('Google Analytics Forwarder', function () {
         mParticle.forwarder.init({
             useAmpClientId: 'True'
         }, reportService.cb, true, 'tracker-name');
+
         window.googleanalytics.args[0][0].should.equal('create');
         window.googleanalytics.args[0][1].should.have.properties('name', 'trackingId', 'useAmpClientId');
         window.googleanalytics.args[0][1].should.have.property('useAmpClientId', true);
