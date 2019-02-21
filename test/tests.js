@@ -125,11 +125,11 @@ describe('Google Analytics Forwarder', function () {
         window._gaq = [];
     });
 
-    it('should initialize with ampClientId if true', function(done) {
+    it('should initialize with ampClientId if clientIdentificationType is AMP', function(done) {
         window.googleanalytics.reset();
 
         mParticle.forwarder.init({
-            useAmpClientId: 'True'
+            clientIdentificationType: 'AMP'
         }, reportService.cb, true, 'tracker-name');
 
         window.googleanalytics.args[0][0].should.equal('create');
@@ -260,7 +260,6 @@ describe('Google Analytics Forwarder', function () {
     });
 
     it('should log custom dimensions and metrics based on user attribute', function(done) {
-        mParticle.setUserAttribute('foo', 'bar');
         mParticle.forwarder.process({
             EventDataType: MessageType.Commerce,
             PromotionAction: {

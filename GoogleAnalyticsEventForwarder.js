@@ -530,7 +530,7 @@
                         fieldsObject.cookieDomain = 'none';
                     }
 
-                    if (forwarderSettings.useAmpClientId == 'True') {
+                    if (forwarderSettings.clientIdentificationType === 'AMP') {
                         fieldsObject.useAmpClientId = true;
                     }
 
