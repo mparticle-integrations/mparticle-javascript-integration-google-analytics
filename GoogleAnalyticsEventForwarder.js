@@ -133,12 +133,7 @@
                     else if (event.EventDataType == MessageType.PageEvent) {
                         reportEvent = true;
 
-                        if (event.EventCategory == window.mParticle.EventType.Transaction) {
-                            logTransaction(event, outputDimensionsAndMetrics, event.CustomFlags);
-                        }
-                        else {
-                            logEvent(event, outputDimensionsAndMetrics, event.CustomFlags);
-                        }
+                        logEvent(event, outputDimensionsAndMetrics, event.CustomFlags);
                     }
 
                     if (reportEvent && reportingService) {
@@ -402,72 +397,6 @@
                     label,
                     value,
                     outputDimensionsAndMetrics);
-            }
-        }
-
-        function logTransaction(data, outputDimensionsAndMetrics) {
-            if (!data.EventAttributes ||
-                !data.EventAttributes.$MethodName ||
-                !data.EventAttributes.$MethodName === 'LogEcommerceTransaction') {
-                // User didn't use logTransaction method, so just log normally
-                logEvent(data, outputDimensionsAndMetrics);
-                return;
-            }
-
-            if (forwarderSettings.classicMode == 'True') {
-                if (data.EventAttributes.CurrencyCode) {
-                    _gaq.push(['_set', 'currencyCode', data.EventAttributes.CurrencyCode]);
-                }
-
-                _gaq.push(['_addTrans',
-                    data.EventAttributes.TransactionID,
-                    data.EventAttributes.TransactionAffiliation.toString(),
-                    data.EventAttributes.RevenueAmount.toString(),
-                    data.EventAttributes.TaxAmount.toString(),
-                    data.EventAttributes.ShippingAmount.toString()
-                ]);
-
-                if (data.EventAttributes.ProductName) {
-                    _gaq.push(['_addItem',
-                        data.EventAttributes.TransactionID,
-                        data.EventAttributes.ProductSKU.toString(),
-                        data.EventAttributes.ProductName.toString(),
-                        data.EventAttributes.ProductCategory.toString(),
-                        data.EventAttributes.ProductUnitPrice.toString(),
-                        data.EventAttributes.ProductQuantity.toString()
-                    ]);
-                }
-
-                _gaq.push(['_trackTrans']);
-            }
-            else {
-                if (!isEcommerceLoaded) {
-                    ga(createCmd('require'), 'ecommerce', 'ecommerce.js');
-                    isEcommerceLoaded = true;
-                }
-
-                ga(createCmd('ecommerce:addTransaction'), {
-                    id: data.EventAttributes.TransactionID,
-                    affiliation: data.EventAttributes.TransactionAffiliation.toString(),
-                    revenue: data.EventAttributes.RevenueAmount.toString(),
-                    shipping: data.EventAttributes.ShippingAmount.toString(),
-                    tax: data.EventAttributes.TaxAmount.toString(),
-                    currency: data.EventAttributes.CurrencyCode.toString()
-                });
-
-                if (data.EventAttributes.ProductName) {
-                    ga(createCmd('ecommerce:addItem'), {
-                        id: data.EventAttributes.TransactionID,
-                        name: data.EventAttributes.ProductName.toString(),
-                        sku: data.EventAttributes.ProductSKU.toString(),
-                        category: data.EventAttributes.ProductCategory.toString(),
-                        price: data.EventAttributes.ProductUnitPrice.toString(),
-                        quantity: data.EventAttributes.ProductQuantity.toString(),
-                        currency: data.EventAttributes.CurrencyCode.toString()
-                    });
-                }
-
-                ga(createCmd('ecommerce:send'), outputDimensionsAndMetrics);
             }
         }
 
