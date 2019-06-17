@@ -1,6 +1,6 @@
 /* eslint-disable no-undef*/
 //
-//  Copyright 2015 mParticle, Inc.
+//  Copyright 2019 mParticle, Inc.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 (function(window) {
     var name = 'GoogleAnalyticsEventForwarder',
+        moduleId = 6,
         MessageType = {
             SessionStart: 1,
             SessionEnd: 2,
@@ -519,13 +520,29 @@
         this.setUserIdentity = setUserIdentity;
     };
 
+    function getId() {
+        return moduleId;
+    }
+
+    function register(config) {
+        if (config.kits) {
+            config.kits[name] = {
+                constructor: constructor
+            };
+        }
+    }
+
     if (!window || !window.mParticle || !window.mParticle.addForwarder) {
         return;
     }
 
     window.mParticle.addForwarder({
         name: name,
-        constructor: constructor
+        constructor: constructor,
+        getId: getId
     });
 
+    module.exports = {
+        register: register
+    };
 })(window);
