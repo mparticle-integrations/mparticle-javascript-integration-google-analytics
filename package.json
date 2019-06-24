@@ -1,9 +1,9 @@
 {
-  "name": "integration-google-analytics",
+  "name": "@mparticle/web-google-analytics-kit",
+  "version": "2.0.0-rc1",
+  "author": "mParticle Developers <developers@mparticle.com> (https://www.mparticle.com)",
   "description": "mParticle integration sdk for Google Analytics",
-  "version": "2.0.0",
   "browser": "dist/GoogleAnalyticsEventForwarder.js",
-  "repository": "https://github.com/mparticle-integrations/mparticle-javascript-integration-google-analytics",
   "scripts": {
     "build": "rollup --config rollup.config.js",
     "watch": "rollup --config rollup.config.js -w"
@@ -15,5 +15,9 @@
     "rollup": "^1.13.1",
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-node-resolve": "^5.0.1"
-  }
+  },
+  "dependencies": {
+    "@mparticle/web-sdk": "^2.9.4-rc.1"
+  },
+  "license": "Apache-2.0"
 }
