@@ -21,7 +21,7 @@ export default [
     {
         input: 'src/GoogleAnalyticsEventForwarder.js',
         output: {
-            file: 'dist/GoogleAnalyticsEventForwarder.js',
+            file: 'dist/GoogleAnalyticsEventForwarder.iife.js',
             format: 'iife',
             exports: 'named',
             name: 'mpGoogleAnalyticsKit',
@@ -37,7 +37,7 @@ export default [
     {
         input: 'src/GoogleAnalyticsEventForwarder.js',
         output: {
-            file: 'npm/GoogleAnalyticsEventForwarder.js',
+            file: 'dist/GoogleAnalyticsEventForwarder.common.js',
             format: 'cjs',
             exports: 'named',
             name: 'mpGoogleAnalyticsKit',
