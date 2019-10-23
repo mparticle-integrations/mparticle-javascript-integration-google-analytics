@@ -1,16 +1,5 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
-/*!
- * isobject <https://github.com/jonschlinkert/isobject>
- *
- * Copyright (c) 2014-2017, Jon Schlinkert.
- * Released under the MIT License.
- */
-
-function isObject(val) {
-  return val != null && typeof val === 'object' && Array.isArray(val) === false;
-}
-
 /* eslint-disable no-undef*/
 //
 //  Copyright 2019 mParticle, Inc.
@@ -26,8 +15,6 @@ function isObject(val) {
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-
-    
 
     var name = 'GoogleAnalyticsEventForwarder',
         moduleId = 6,
@@ -99,18 +86,18 @@ function isObject(val) {
         }
 
         function applyCustomDimensionsMetricsForSourceAttributes(attributes, targetDimensionsAndMetrics, mapLevel) {
-            for (var cdKey in mapLevel.customDimensions) {
+            for (var customDimension in mapLevel.customDimensions) {
                 for (attrName in attributes) {
-                    if (mapLevel.customDimensions[cdKey] === attrName) {
-                        targetDimensionsAndMetrics[cdKey] = attributes[attrName];
+                    if (customDimension === attrName) {
+                        targetDimensionsAndMetrics[mapLevel.customDimensions[customDimension]] = attributes[attrName];
                     }
                 }
             }
 
-            for (var cmKey in mapLevel.customMetrics) {
+            for (var customMetric in mapLevel.customMetrics) {
                 for (attrName in attributes) {
-                    if (mapLevel.customMetrics[cmKey] === attrName) {
-                        targetDimensionsAndMetrics[cmKey] = attributes[attrName];
+                    if (customMetric === attrName) {
+                        targetDimensionsAndMetrics[mapLevel.customMetrics[customMetric]] = attributes[attrName];
                     }
                 }
             }
@@ -412,13 +399,6 @@ function isObject(val) {
             }
         }
 
-        function checkForDuplicateMapping(dimensionOrMetric, eventLevelMap) {
-            var existingMapper = eventLevelMap['customDimensions'][formatDimensionOrMetric(dimensionOrMetric.value)];
-            if (existingMapper) {
-                console.log('Warning: both ' + existingMapper + ' & ' + dimensionOrMetric.map + ' are mapped to ' + dimensionOrMetric.value + '. ' + dimensionOrMetric.map + ' is replacing ' + existingMapper + '. If this is a mistake, please revisit the Google Analytics settings at app.mparticle.com. Otherwise, please ignore this warning.');
-            }
-        }
-
         function initForwarder(settings, service, testMode, tid) {
             try {
                 forwarderSettings = settings;
@@ -489,14 +469,11 @@ function isObject(val) {
                         var customDimensions = JSON.parse(forwarderSettings.customDimensions.replace(/&quot;/g, '\"'));
                         customDimensions.forEach(function(dimension) {
                             if (dimension.maptype === 'EventAttributeClass.Name') {
-                                checkForDuplicateMapping(dimension, eventLevelMap);
-                                eventLevelMap['customDimensions'][formatDimensionOrMetric(dimension.value)] = dimension.map;
+                                eventLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
                             } else if (dimension.maptype === 'UserAttributeClass.Name') {
-                                checkForDuplicateMapping(dimension, userLevelMap);
-                                userLevelMap['customDimensions'][formatDimensionOrMetric(dimension.value)] = dimension.map;
+                                userLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
                             } else if (dimension.maptype === 'ProductAttributeSelector.Name') {
-                                checkForDuplicateMapping(dimension, productLevelMap);
-                                productLevelMap['customDimensions'][formatDimensionOrMetric(dimension.value)] = dimension.map;
+                                productLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
                             }
                         });
                     }
@@ -505,14 +482,11 @@ function isObject(val) {
                         var customMetrics = JSON.parse(forwarderSettings.customMetrics.replace(/&quot;/g, '\"'));
                         customMetrics.forEach(function(metric) {
                             if (metric.maptype === 'EventAttributeClass.Name') {
-                                checkForDuplicateMapping(metric, eventLevelMap);
-                                eventLevelMap['customMetrics'][formatDimensionOrMetric(metric.value)] = metric.map;
+                                eventLevelMap['customMetrics'][metric.map] = formatDimensionOrMetric(metric.value);
                             } else if (metric.maptype === 'UserAttributeClass.Name') {
-                                checkForDuplicateMapping(metric, userLevelMap);
-                                userLevelMap['customMetrics'][formatDimensionOrMetric(metric.value)] = metric.map;
+                                userLevelMap['customMetrics'][metric.map] = formatDimensionOrMetric(metric.value);
                             } else if (metric.maptype === 'ProductAttributeSelector.Name') {
-                                checkForDuplicateMapping(metric, productLevelMap);
-                                productLevelMap['customMetrics'][formatDimensionOrMetric(metric.value)] = metric.map;
+                                productLevelMap['customMetrics'][metric.map] = formatDimensionOrMetric(metric.value);
                             }
                         });
                     }
@@ -533,6 +507,10 @@ function isObject(val) {
 
     function getId() {
         return moduleId;
+    }
+
+    function isObject(val) {
+        return val != null && typeof val === 'object' && Array.isArray(val) === false;
     }
 
     function register(config) {
