@@ -16,6 +16,7 @@
 
     var name = 'GoogleAnalyticsEventForwarder',
         moduleId = 6,
+        version = '2.0.1',
         MessageType = {
             SessionStart: 1,
             SessionEnd: 2,
@@ -546,5 +547,8 @@
     }
 
     module.exports = {
-        register: register
+        register: register,
+        getVersion: function() {
+            return version;
+        }
     };
