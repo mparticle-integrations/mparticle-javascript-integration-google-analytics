@@ -17,7 +17,7 @@ var mpGoogleAnalyticsKit = (function (exports) {
 
         var name = 'GoogleAnalyticsEventForwarder',
             moduleId = 6,
-            version = '2.0.1',
+            version = '2.0.2',
             MessageType = {
                 SessionStart: 1,
                 SessionEnd: 2,
