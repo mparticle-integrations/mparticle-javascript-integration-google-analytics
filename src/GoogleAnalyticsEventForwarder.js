@@ -337,7 +337,7 @@
                     ga(createCmd('set'), 'page', event.CustomFlags[PAGE]);
                 }
                 if (event.CustomFlags && event.CustomFlags[TITLE]){
-                    ga(createCmd('set'), 'page', event.CustomFlags[TITLE]);
+                    ga(createCmd('set'), 'title', event.CustomFlags[TITLE]);
                 }
                 ga(createCmd('send'), customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'pageview', outputDimensionsAndMetrics);
             }
