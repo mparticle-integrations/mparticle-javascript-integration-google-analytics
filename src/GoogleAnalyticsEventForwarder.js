@@ -16,7 +16,7 @@
 
     var name = 'GoogleAnalyticsEventForwarder',
         moduleId = 6,
-        version = '2.0.3',
+        version = '2.0.4',
         MessageType = {
             SessionStart: 1,
             SessionEnd: 2,
@@ -503,7 +503,7 @@
                     console.log(userLevelMap)
                     console.log(eventLevelMap)
                     console.log(productLevelMap)
-                    debugger;
+
                     if (forwarderSettings.customMetrics) {
                         var customMetrics = JSON.parse(forwarderSettings.customMetrics.replace(/&quot;/g, '\"'));
                         customMetrics.forEach(function(metric) {

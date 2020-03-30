@@ -178,17 +178,16 @@ describe('Google Analytics Forwarder', function() {
                 customDimensions:
                     '[\
                 {&quot;maptype&quot;:&quot;EventAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 1&quot;,&quot;map&quot;:&quot;color&quot;},\
-                {&quot;maptype&quot;:&quot;EventAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 4&quot;,&quot;map&quot;:&quot;colour&quot;},\
+                {&quot;maptype&quot;:&quot;EventAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 1&quot;,&quot;map&quot;:&quot;colour&quot;},\
                 {&quot;maptype&quot;:&quot;EventAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 2&quot;,&quot;map&quot;:&quot;gender&quot;},\
                 {&quot;maptype&quot;:&quot;EventAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 5&quot;,&quot;map&quot;:&quot;sex&quot;},\
                 {&quot;maptype&quot;:&quot;EventAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 3&quot;,&quot;map&quot;:&quot;size&quot;},\
-                {&quot;maptype&quot;:&quot;EventAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 6&quot;,&quot;map&quot;:&quot;size&quot;},\
                 {&quot;maptype&quot;:&quot;ProductAttributeSelector.Name&quot;,&quot;value&quot;:&quot;Dimension 1&quot;,&quot;map&quot;:&quot;color&quot;},\
                 {&quot;maptype&quot;:&quot;ProductAttributeSelector.Name&quot;,&quot;value&quot;:&quot;Dimension 2&quot;,&quot;map&quot;:&quot;gender&quot;},\
                 {&quot;maptype&quot;:&quot;ProductAttributeSelector.Name&quot;,&quot;value&quot;:&quot;Dimension 3&quot;,&quot;map&quot;:&quot;size&quot;},\
-                {&quot;maptype&quot;:&quot;UserAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 2&quot;,&quot;map&quot;:&quot;color&quot;},\
-                {&quot;maptype&quot;:&quot;UserAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 3&quot;,&quot;map&quot;:&quot;gender&quot;},\
-                {&quot;maptype&quot;:&quot;UserAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 1&quot;,&quot;map&quot;:&quot;size&quot;}\
+                {&quot;maptype&quot;:&quot;UserAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 1&quot;,&quot;map&quot;:&quot;color&quot;},\
+                {&quot;maptype&quot;:&quot;UserAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 2&quot;,&quot;map&quot;:&quot;gender&quot;},\
+                {&quot;maptype&quot;:&quot;UserAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 3&quot;,&quot;map&quot;:&quot;size&quot;}\
             ]',
                 customMetrics:
                     '[\
@@ -211,7 +210,7 @@ describe('Google Analytics Forwarder', function() {
         window._gaq = [];
     });
 
-    xit('should initialize with ampClientId if clientIdentificationType is AMP', function(done) {
+    it('should initialize with ampClientId if clientIdentificationType is AMP', function(done) {
         window.googleanalytics.reset();
 
         mParticle.forwarder.init(
@@ -237,7 +236,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should change page name for custom flag based on Google.Page', function(done) {
+    it('should change page name for custom flag based on Google.Page', function(done) {
         mParticle.forwarder.process({
             EventDataType: MessageType.PageView,
             EventName: 'Test Page Event',
@@ -256,7 +255,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should change page name for custom flag based on Google.Title', function(done) {
+    it('should change page name for custom flag based on Google.Title', function(done) {
         mParticle.forwarder.process({
             EventDataType: MessageType.PageView,
             EventName: 'Test Page Event',
@@ -275,7 +274,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should change page name for custom flag based on both Google.Page and Google.Title', function(done) {
+    it('should change page name for custom flag based on both Google.Page and Google.Title', function(done) {
         mParticle.forwarder.process({
             EventDataType: MessageType.PageView,
             EventName: 'Test Page Event',
@@ -450,7 +449,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    it.only('should log custom dimensions and metrics based on user attribute', function(done) {
+    it('should log custom dimensions and metrics based on user attribute', function(done) {
         mParticle.forwarder.process({
             EventDataType: MessageType.Commerce,
             PromotionAction: {
@@ -473,26 +472,93 @@ describe('Google Analytics Forwarder', function() {
                 players: 3,
             },
         });
-        debugger
-        window.googleanalytics.args[2][4].should.have.property(
+
+        window.googleanalytics.args[1][4].should.have.property(
             'dimension1',
             'blue'
         );
-        window.googleanalytics.args[2][4].should.have.property(
+        window.googleanalytics.args[1][4].should.have.property(
             'dimension2',
             'female'
         );
-        window.googleanalytics.args[2][4].should.have.property(
+        window.googleanalytics.args[1][4].should.have.property(
             'dimension3',
             'large'
         );
-        window.googleanalytics.args[2][4].should.have.property('metric1', 1);
-        window.googleanalytics.args[2][4].should.have.property('metric2', 15);
-        window.googleanalytics.args[2][4].should.have.property('metric3', 3);
+        window.googleanalytics.args[1][4].should.have.property('metric1', 1);
+        window.googleanalytics.args[1][4].should.have.property('metric2', 15);
+        window.googleanalytics.args[1][4].should.have.property('metric3', 3);
         done();
     });
 
-    xit('should log events as non-interaction or interaction when provided with flag', function(done) {
+    it('should allow an attribute to be mapped to multiple dimensions', function(done) {
+        var event = {
+            EventDataType: MessageType.PageEvent,
+            EventName: 'Test Event',
+            EventAttributes: {
+                label: 'label',
+                value: 200,
+                gender: 'male',
+            },
+        };
+        mParticle.forwarder.process(event);
+        window.googleanalytics.args[0][6].should.have.property(
+            'dimension2',
+            'male'
+        );
+
+        var event2 = {
+            EventDataType: MessageType.PageEvent,
+            EventName: 'Test Event',
+            EventAttributes: {
+                label: 'label',
+                value: 200,
+                sex: 'male',
+            },
+        };
+
+        mParticle.forwarder.process(event2);
+        window.googleanalytics.args[1][6].should.have.property(
+            'dimension5',
+            'male'
+        );
+        done();
+    });
+
+    it('should allow multiple attributes to be mapped to the same dimensions', function(done) {
+        var event = {
+            EventDataType: MessageType.PageEvent,
+            EventName: 'Test Event',
+            EventAttributes: {
+                label: 'label',
+                value: 200,
+                colour: 'blue',
+            },
+        };
+        mParticle.forwarder.process(event);
+
+        window.googleanalytics.args[0][6].should.have.property(
+            'dimension1',
+            'blue'
+        );
+        var event2 = {
+            EventDataType: MessageType.PageEvent,
+            EventName: 'Test Event',
+            EventAttributes: {
+                label: 'label',
+                value: 200,
+                color: 'blue',
+            },
+        };
+        mParticle.forwarder.process(event2);
+        window.googleanalytics.args[1][6].should.have.property(
+            'dimension1',
+            'blue'
+        );
+        done();
+    });
+
+    it('should log events as non-interaction or interaction when provided with flag', function(done) {
         mParticle.forwarder.process({
             EventDataType: MessageType.Commerce,
             PromotionAction: {
@@ -519,7 +585,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should log event', function(done) {
+    it('should log event', function(done) {
         mParticle.forwarder.process({
             EventDataType: MessageType.PageEvent,
             EventName: 'Test Event',
@@ -540,7 +606,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should log page view', function(done) {
+    it('should log page view', function(done) {
         var event = {
             EventDataType: MessageType.PageView,
         };
@@ -558,7 +624,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should log commerce event', function(done) {
+    it('should log commerce event', function(done) {
         mParticle.forwarder.process({
             EventDataType: MessageType.Commerce,
             EventCategory: CommerceEventType.ProductPurchase,
@@ -628,7 +694,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should log refund', function(done) {
+    it('should log refund', function(done) {
         var event = {
             EventDataType: MessageType.Commerce,
             EventCategory: CommerceEventType.ProductRefund,
@@ -671,7 +737,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should log add to cart', function(done) {
+    it('should log add to cart', function(done) {
         var event = {
             EventDataType: MessageType.Commerce,
             EventCategory: CommerceEventType.ProductAddToCart,
@@ -712,7 +778,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should log remove from cart', function(done) {
+    it('should log remove from cart', function(done) {
         var event = {
             EventDataType: MessageType.Commerce,
             EventCategory: CommerceEventType.ProductRemoveFromCart,
@@ -756,7 +822,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should log checkout', function(done) {
+    it('should log checkout', function(done) {
         var event = {
             EventDataType: MessageType.Commerce,
             EventCategory: CommerceEventType.ProductCheckout,
@@ -804,7 +870,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should log product click', function(done) {
+    it('should log product click', function(done) {
         var event = {
             EventDataType: MessageType.Commerce,
             EventCategory: CommerceEventType.ProductClick,
@@ -955,7 +1021,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should log promotion view', function(done) {
+    it('should log promotion view', function(done) {
         var event = {
             EventDataType: MessageType.Commerce,
             EventCategory: CommerceEventType.PromotionView,
@@ -1001,7 +1067,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    xit('should log promotion click', function(done) {
+    it('should log promotion click', function(done) {
         mParticle.forwarder.process({
             EventDataType: MessageType.Commerce,
             EventCategory: CommerceEventType.PromotionClick,
