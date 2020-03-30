@@ -298,7 +298,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    it('should log custom dimensions and custom event with an event log', function(done) {
+    it('should log custom dimensions and custom events with an event log', function(done) {
         var event = {
             EventDataType: MessageType.PageEvent,
             EventName: 'Test Event',
