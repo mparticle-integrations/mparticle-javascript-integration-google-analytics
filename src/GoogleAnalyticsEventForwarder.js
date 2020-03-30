@@ -89,7 +89,12 @@
             for (var customDimension in mapLevel.customDimensions) {
                 for (attrName in attributes) {
                     if (customDimension === attrName) {
-                        targetDimensionsAndMetrics[mapLevel.customDimensions[customDimension]] = attributes[attrName];
+                        mapLevel.customDimensions[customDimension].forEach(function(cd) {
+                            if (targetDimensionsAndMetrics[cd]) {
+                                console.warn(cd + ' being overwritten. Double check your mappings and/or code, as a particular dimension should not be used more than once.')
+                            }
+                            targetDimensionsAndMetrics[cd] = attributes[attrName];
+                        })
                     }
                 }
             }
@@ -97,7 +102,12 @@
             for (var customMetric in mapLevel.customMetrics) {
                 for (attrName in attributes) {
                     if (customMetric === attrName) {
-                        targetDimensionsAndMetrics[mapLevel.customMetrics[customMetric]] = attributes[attrName];
+                        mapLevel.customMetrics[customMetric].forEach(function(cm) {
+                            if (targetDimensionsAndMetrics[cm]) {
+                                console.warn(cm + ' being overwritten. Double check your mappings and/or code, as a particular metric should not be used more than once.')
+                            }
+                            targetDimensionsAndMetrics[cm] = attributes[attrName];
+                        })
                     }
                 }
             }
@@ -470,28 +480,57 @@
                     if (forwarderSettings.useSecure == 'True') {
                         ga(createCmd('set'), 'forceSSL', true);
                     }
+
                     if (forwarderSettings.customDimensions) {
                         var customDimensions = JSON.parse(forwarderSettings.customDimensions.replace(/&quot;/g, '\"'));
-                        customDimensions.forEach(function(dimension) {
+                        customDimensions.forEach(function(dimension, i) {
                             if (dimension.maptype === 'EventAttributeClass.Name') {
-                                eventLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
+                                addTypeToMapping(eventLevelMap, 'customDimensions', dimension);
+
+                                
+                                
+                                
+                                // eventLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
                             } else if (dimension.maptype === 'UserAttributeClass.Name') {
-                                userLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
+                                addTypeToMapping(userLevelMap, 'customDimensions', dimension);
+                                // userLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
                             } else if (dimension.maptype === 'ProductAttributeSelector.Name') {
-                                productLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
+                                addTypeToMapping(productLevelMap, 'customDimensions', dimension);
+                                // productLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
                             }
                         });
                     }
-
+                    console.log(userLevelMap)
+                    console.log(eventLevelMap)
+                    console.log(productLevelMap)
+                    debugger;
                     if (forwarderSettings.customMetrics) {
                         var customMetrics = JSON.parse(forwarderSettings.customMetrics.replace(/&quot;/g, '\"'));
                         customMetrics.forEach(function(metric) {
                             if (metric.maptype === 'EventAttributeClass.Name') {
-                                eventLevelMap['customMetrics'][metric.map] = formatDimensionOrMetric(metric.value);
+                                addTypeToMapping(eventLevelMap, 'customMetrics', metric);
+
+                                // if (eventLevelMap['customMetrics'][metric.map]) {
+                                //     eventLevelMap['customMetrics'][metric.map].push(formatDimensionOrMetric(metric.value));
+                                // } else {
+                                //     eventLevelMap['customMetrics'][metric.map] = [formatDimensionOrMetric(metric.value)];
+                                // }
                             } else if (metric.maptype === 'UserAttributeClass.Name') {
-                                userLevelMap['customMetrics'][metric.map] = formatDimensionOrMetric(metric.value);
+                                addTypeToMapping(userLevelMap, 'customMetrics', metric);
+
+                                // if (userLevelMap['customMetrics'][metric.map]) {
+                                //     userLevelMap['customMetrics'][metric.map].push(formatDimensionOrMetric(metric.value));
+                                // } else {
+                                //     userLevelMap['customMetrics'][metric.map] = [formatDimensionOrMetric(metric.value)];
+                                // }
                             } else if (metric.maptype === 'ProductAttributeSelector.Name') {
-                                productLevelMap['customMetrics'][metric.map] = formatDimensionOrMetric(metric.value);
+                                addTypeToMapping(productLevelMap, 'customMetrics', metric);
+                                
+                                // if (productLevelMap['customMetrics'][metric.map]) {
+                                //     productLevelMap['customMetrics'][metric.map].push(formatDimensionOrMetric(metric.value));
+                                // } else {
+                                //     productLevelMap['customMetrics'][metric.map] = [formatDimensionOrMetric(metric.value)];
+                                // }
                             }
                         });
                     }
@@ -502,6 +541,18 @@
             }
             catch (e) {
                 return 'Failed to initialize: ' + name;
+            }
+        }
+
+        function addTypeToMapping(map, type, mapVal) {
+            var formattedMapVal = formatDimensionOrMetric(mapVal.value);
+            if (!map[type][mapVal.map]) {
+                map[type][mapVal.map] = [formattedMapVal]
+                return;
+            }
+
+            if (!map[type][mapVal.map].indexOf(mapVal.value) >= 0) {
+                map[type][mapVal.map].push(formattedMapVal)
             }
         }
 
