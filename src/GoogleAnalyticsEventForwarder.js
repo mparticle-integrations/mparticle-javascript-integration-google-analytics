@@ -90,10 +90,9 @@
                 for (attrName in attributes) {
                     if (customDimension === attrName) {
                         mapLevel.customDimensions[customDimension].forEach(function(cd) {
-                            if (targetDimensionsAndMetrics[cd]) {
-                                console.warn(cd + ' being overwritten. Double check your mappings and/or code, as a particular dimension should not be used more than once.')
+                            if (!targetDimensionsAndMetrics[cd]) {
+                                targetDimensionsAndMetrics[cd] = attributes[attrName];
                             }
-                            targetDimensionsAndMetrics[cd] = attributes[attrName];
                         })
                     }
                 }
@@ -103,10 +102,9 @@
                 for (attrName in attributes) {
                     if (customMetric === attrName) {
                         mapLevel.customMetrics[customMetric].forEach(function(cm) {
-                            if (targetDimensionsAndMetrics[cm]) {
-                                console.warn(cm + ' being overwritten. Double check your mappings and/or code, as a particular metric should not be used more than once.')
+                            if (!targetDimensionsAndMetrics[cm]) {
+                                targetDimensionsAndMetrics[cm] = attributes[attrName];
                             }
-                            targetDimensionsAndMetrics[cm] = attributes[attrName];
                         })
                     }
                 }
@@ -483,54 +481,26 @@
 
                     if (forwarderSettings.customDimensions) {
                         var customDimensions = JSON.parse(forwarderSettings.customDimensions.replace(/&quot;/g, '\"'));
-                        customDimensions.forEach(function(dimension, i) {
+                        customDimensions.forEach(function(dimension) {
                             if (dimension.maptype === 'EventAttributeClass.Name') {
                                 addTypeToMapping(eventLevelMap, 'customDimensions', dimension);
-
-                                
-                                
-                                
-                                // eventLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
                             } else if (dimension.maptype === 'UserAttributeClass.Name') {
                                 addTypeToMapping(userLevelMap, 'customDimensions', dimension);
-                                // userLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
                             } else if (dimension.maptype === 'ProductAttributeSelector.Name') {
                                 addTypeToMapping(productLevelMap, 'customDimensions', dimension);
-                                // productLevelMap['customDimensions'][dimension.map] = formatDimensionOrMetric(dimension.value);
                             }
                         });
                     }
-                    console.log(userLevelMap)
-                    console.log(eventLevelMap)
-                    console.log(productLevelMap)
 
                     if (forwarderSettings.customMetrics) {
                         var customMetrics = JSON.parse(forwarderSettings.customMetrics.replace(/&quot;/g, '\"'));
                         customMetrics.forEach(function(metric) {
                             if (metric.maptype === 'EventAttributeClass.Name') {
                                 addTypeToMapping(eventLevelMap, 'customMetrics', metric);
-
-                                // if (eventLevelMap['customMetrics'][metric.map]) {
-                                //     eventLevelMap['customMetrics'][metric.map].push(formatDimensionOrMetric(metric.value));
-                                // } else {
-                                //     eventLevelMap['customMetrics'][metric.map] = [formatDimensionOrMetric(metric.value)];
-                                // }
                             } else if (metric.maptype === 'UserAttributeClass.Name') {
                                 addTypeToMapping(userLevelMap, 'customMetrics', metric);
-
-                                // if (userLevelMap['customMetrics'][metric.map]) {
-                                //     userLevelMap['customMetrics'][metric.map].push(formatDimensionOrMetric(metric.value));
-                                // } else {
-                                //     userLevelMap['customMetrics'][metric.map] = [formatDimensionOrMetric(metric.value)];
-                                // }
                             } else if (metric.maptype === 'ProductAttributeSelector.Name') {
                                 addTypeToMapping(productLevelMap, 'customMetrics', metric);
-                                
-                                // if (productLevelMap['customMetrics'][metric.map]) {
-                                //     productLevelMap['customMetrics'][metric.map].push(formatDimensionOrMetric(metric.value));
-                                // } else {
-                                //     productLevelMap['customMetrics'][metric.map] = [formatDimensionOrMetric(metric.value)];
-                                // }
                             }
                         });
                     }
