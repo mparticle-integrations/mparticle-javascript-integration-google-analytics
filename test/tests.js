@@ -1040,6 +1040,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
+    // setUserIdentity is only on MP.js version 1.x
     it('it should set user identity', function(done) {
         var getVersionBackup = mParticle.getVersion;
         mParticle.getVersion = function() {
