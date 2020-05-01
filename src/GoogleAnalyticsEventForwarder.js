@@ -355,18 +355,18 @@
             }
         }
 
-        function logEvent(data, outputDimensionsAndMetrics, customFlags) {
+        function logEvent(event, outputDimensionsAndMetrics, customFlags) {
             var label = '',
-                category = getEventTypeName(data.EventCategory),
+                category = getEventTypeName(event.EventCategory),
                 value;
 
-            if (data.EventAttributes) {
-                if (data.EventAttributes.label) {
-                    label = data.EventAttributes.label;
+            if (event.EventAttributes) {
+                if (event.EventAttributes.label) {
+                    label = event.EventAttributes.label;
                 }
 
-                if (data.EventAttributes.value) {
-                    value = parseInt(data.EventAttributes.value, 10);
+                if (event.EventAttributes.value) {
+                    value = parseInt(event.EventAttributes.value, 10);
 
                     // Test for NaN
                     if (value != value) {
@@ -374,15 +374,15 @@
                     }
                 }
 
-                if (data.EventAttributes.category) {
-                    category = data.EventAttributes.category;
+                if (event.EventAttributes.category) {
+                    category = event.EventAttributes.category;
                 }
             }
 
-            if (data.CustomFlags) {
-                var googleCategory = data.CustomFlags[CATEGORY],
-                    googleLabel = data.CustomFlags[LABEL],
-                    googleValue = parseInt(data.CustomFlags[VALUE], 10);
+            if (event.CustomFlags) {
+                var googleCategory = event.CustomFlags[CATEGORY],
+                    googleLabel = event.CustomFlags[LABEL],
+                    googleValue = parseInt(event.CustomFlags[VALUE], 10);
 
                 if (googleCategory) {
                     category = googleCategory;
@@ -401,7 +401,7 @@
             if (forwarderSettings.classicMode == 'True') {
                 _gaq.push(['_trackEvent',
                     category,
-                    data.EventName,
+                    event.EventName,
                     label,
                     value]);
             }
@@ -409,13 +409,13 @@
                 ga(createCmd('send'),
                     customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'event',
                     category,
-                    data.EventName,
+                    event.EventName,
                     label,
                     value,
                     outputDimensionsAndMetrics
                 );
 
-                sendOptionalUserTimingMessage(data, outputDimensionsAndMetrics);
+                sendOptionalUserTimingMessage(event, outputDimensionsAndMetrics);
             }
         }
 
