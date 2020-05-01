@@ -421,7 +421,7 @@
 
         function sendOptionalUserTimingMessage(event, outputDimensionsAndMetrics) {
             // only if there is a custom flag of Google.UserTiming should a user timing message be sent
-            if (event.CustomFlags && event.CustomFlags[USERTIMING]) {
+            if (event.CustomFlags && event.CustomFlags[USERTIMING] && typeof(event.CustomFlags[USERTIMING]) === 'number') {
                 var userTimingObject = {
                     hitType: 'timing',
                     timingVar: event.EventName,
@@ -431,7 +431,7 @@
                 if (event.CustomFlags[CATEGORY]) {
                     userTimingObject.timingCategory = event.CustomFlags[CATEGORY];
                 } else {
-                    console.warn('A Google Analytics User Timing event requires a custom flag of Google.Category. User Timing event not sent')
+                    console.warn('A Google Analytics User Timing event requires a custom flag of Google.Category. User Timing event not sent.')
                     return;
                 }
                 if (event.CustomFlags[LABEL]) {
