@@ -1431,4 +1431,32 @@ describe('Google Analytics Forwarder', function() {
 
         done();
     });
+
+    it('should pass EventCategory to a user timing event if Google.Category custom flag not passed', function(done) {
+        mParticle.forwarder.process({
+            EventDataType: MessageType.PageEvent,
+            EventName: 'Test Page Event',
+            CustomFlags: {
+                'Google.Label': 'Custom Label',
+                'Google.UserTiming': 500,
+            },
+            EventCategory: EventType.Location,
+        });
+
+        // regular GA event
+        window.googleanalytics.args[0][0].should.equal('tracker-name.send');
+        window.googleanalytics.args[0][1].should.equal('event');
+        window.googleanalytics.args[0][2].should.equal('Location');
+        window.googleanalytics.args[0][3].should.equal('Test Page Event');
+        window.googleanalytics.args[0][4].should.equal('Custom Label');
+
+        // user timing event should not exist
+        window.googleanalytics.args[1][0].should.equal('tracker-name.send');
+        window.googleanalytics.args[1][1].hitType.should.equal('timing');
+        window.googleanalytics.args[1][1].timingCategory.should.equal(
+            'Location'
+        );
+
+        done();
+    });
 });

@@ -425,18 +425,10 @@
                 var userTimingObject = {
                     hitType: 'timing',
                     timingVar: event.EventName,
-                    timingValue: event.CustomFlags[USERTIMING]
+                    timingValue: event.CustomFlags[USERTIMING],
+                    timingCategory: event.CustomFlags[CATEGORY] || getEventTypeName(event.EventCategory),
+                    timingLabel: event.CustomFlags[LABEL] || null,
                 };
-
-                if (event.CustomFlags[CATEGORY]) {
-                    userTimingObject.timingCategory = event.CustomFlags[CATEGORY];
-                } else {
-                    console.warn('A Google Analytics User Timing event requires a custom flag of Google.Category. User Timing event not sent.')
-                    return;
-                }
-                if (event.CustomFlags[LABEL]) {
-                    userTimingObject.timingLabel = event.CustomFlags[LABEL];
-                }
 
                 for (var key in outputDimensionsAndMetrics) {
                     if (outputDimensionsAndMetrics.hasOwnProperty(key)) {
