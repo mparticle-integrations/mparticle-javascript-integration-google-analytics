@@ -428,11 +428,14 @@
                     timingValue: event.CustomFlags[USERTIMING]
                 };
 
-                if (event.CustomFlags[LABEL]) {
-                    userTimingObject.timingLabel = event.CustomFlags[LABEL];
-                }
                 if (event.CustomFlags[CATEGORY]) {
                     userTimingObject.timingCategory = event.CustomFlags[CATEGORY];
+                } else {
+                    console.warn('A Google Analytics User Timing event requires a custom flag of Google.Category. User Timing event not sent')
+                    return;
+                }
+                if (event.CustomFlags[LABEL]) {
+                    userTimingObject.timingLabel = event.CustomFlags[LABEL];
                 }
 
                 for (var key in outputDimensionsAndMetrics) {
