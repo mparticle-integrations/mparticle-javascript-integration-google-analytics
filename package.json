@@ -11,18 +11,31 @@
     "repository": "https://github.com/mparticle-integrations/mparticle-javascript-integration-google-analytics",
     "scripts": {
         "build": "rollup --config rollup.config.js",
+        "test": "node test/boilerplate/test-karma.js",
         "watch": "rollup --config rollup.config.js -w"
     },
     "devDependencies": {
-        "should": "^7.1.0",
+        "should": "13.2.3",
         "mocha": "^2.3.2",
+        "chai": "^4.2.0",
+        "karma": "^3.1.1",
+        "karma-chai": "^0.1.0",
+        "karma-chrome-launcher": "^2.2.0",
+        "karma-edge-launcher": "^0.4.2",
+        "karma-firefox-launcher": "^1.1.0",
+        "karma-ie-launcher": "^1.0.0",
+        "karma-junit-reporter": "^1.2.0",
+        "karma-mocha": "^1.3.0",
+        "karma-safari-launcher": "^1.0.0",
         "rollup": "^1.13.1",
         "rollup-plugin-commonjs": "^10.0.0",
         "rollup-plugin-node-resolve": "^5.0.1",
         "eslint": "^6.4.0",
+        "shelljs": "0.8.3",
         "eslint-config-prettier": "6.3.0",
         "eslint-plugin-prettier": "3.1.1",
-        "prettier": "1.18.2"
+        "prettier": "1.18.2",
+        "watchify": "^3.11.0"
     },
     "dependencies": {
         "@mparticle/web-sdk": "^2.11.0"
