@@ -73,7 +73,7 @@ jobs:
           author_email: developers@mparticle.com
           message: "Generate latest bundle"
           force: true
-          add: "dist/ build/"
+          add: "dist/"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
