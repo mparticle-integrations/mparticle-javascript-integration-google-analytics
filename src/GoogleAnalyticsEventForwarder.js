@@ -327,6 +327,17 @@
 
                     sendEcommerceEvent(event.EventCategory, outputDimensionsAndMetrics, customFlags);
                 }
+                else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.CheckoutOption) {
+                    event.ProductAction.ProductList.forEach(function (product) {
+                        var updatedProductDimentionAndMetrics = {};
+                        applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
+                        addEcommerceProduct(product, updatedProductDimentionAndMetrics);
+                    });
+
+                    ga(createCmd('ec:setAction'), 'checkout_option', event.EventAttributes);
+
+                    sendEcommerceEvent(event.EventCategory, outputDimensionsAndMetrics, customFlags);
+                }
                 else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.Click) {
                     event.ProductAction.ProductList.forEach(function(product) {
                         var updatedProductDimentionAndMetrics = {};
