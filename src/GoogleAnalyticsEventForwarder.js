@@ -314,7 +314,6 @@
                     sendEcommerceEvent(event.EventCategory, outputDimensionsAndMetrics, customFlags);
                 }
                 else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.Checkout || event.ProductAction.ProductActionType == mParticle.ProductActionType.CheckoutOption) {
-                    var type = event.ProductAction.ProductActionType;
                     event.ProductAction.ProductList.forEach(function(product) {
                         var updatedProductDimentionAndMetrics = {};
                         applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
