@@ -899,8 +899,8 @@ describe('Google Analytics Forwarder', function() {
         var event = {
             EventDataType: MessageType.Commerce,
             EventAttributes: {
-                shipping: 'fedex',
-                cartId: 'cartId123',
+                step: 1,
+                option: 'fedex',
             },
             EventCategory: CommerceEventType.ProductCheckout,
             ProductAction: {
@@ -915,6 +915,7 @@ describe('Google Analytics Forwarder', function() {
         };
 
         mParticle.forwarder.process(event);
+        debugger;
 
         window.googleanalytics.args[0][0].should.equal(
             'tracker-name.ec:addProduct'
@@ -926,13 +927,10 @@ describe('Google Analytics Forwarder', function() {
             'tracker-name.ec:setAction'
         );
         window.googleanalytics.args[1][1].should.equal('checkout_option');
+        window.googleanalytics.args[1][2].should.have.property('step', 1);
         window.googleanalytics.args[1][2].should.have.property(
-            'shipping',
+            'option',
             'fedex'
-        );
-        window.googleanalytics.args[1][2].should.have.property(
-            'cartId',
-            'cartId123'
         );
 
         window.googleanalytics.args[2][0].should.equal('tracker-name.send');

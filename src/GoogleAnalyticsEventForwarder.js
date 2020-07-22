@@ -313,28 +313,18 @@
 
                     sendEcommerceEvent(event.EventCategory, outputDimensionsAndMetrics, customFlags);
                 }
-                else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.Checkout) {
+                else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.Checkout || event.ProductAction.ProductActionType == mParticle.ProductActionType.CheckoutOption) {
+                    var type = event.ProductAction.ProductActionType;
                     event.ProductAction.ProductList.forEach(function(product) {
                         var updatedProductDimentionAndMetrics = {};
                         applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
                         addEcommerceProduct(product, updatedProductDimentionAndMetrics);
                     });
 
-                    ga(createCmd('ec:setAction'), 'checkout', {
-                        step: event.ProductAction.CheckoutStep,
-                        option: event.ProductAction.CheckoutOptions
+                    ga(createCmd('ec:setAction'), event.ProductAction.ProductActionType == mParticle.ProductActionType.Checkout ? 'checkout' : 'checkout_option', {
+                        step: event.ProductAction.CheckoutStep || event.EventAttributes.step || null,
+                        option: event.ProductAction.CheckoutOptions || event.EventAttributes.option || null,
                     });
-
-                    sendEcommerceEvent(event.EventCategory, outputDimensionsAndMetrics, customFlags);
-                }
-                else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.CheckoutOption) {
-                    event.ProductAction.ProductList.forEach(function (product) {
-                        var updatedProductDimentionAndMetrics = {};
-                        applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
-                        addEcommerceProduct(product, updatedProductDimentionAndMetrics);
-                    });
-
-                    ga(createCmd('ec:setAction'), 'checkout_option', event.EventAttributes);
 
                     sendEcommerceEvent(event.EventCategory, outputDimensionsAndMetrics, customFlags);
                 }
