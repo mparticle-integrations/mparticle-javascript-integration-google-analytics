@@ -17,7 +17,7 @@ var mpGoogleAnalyticsKit = (function (exports) {
 
         var name = 'GoogleAnalyticsEventForwarder',
             moduleId = 6,
-            version = '2.0.5',
+            version = '2.0.6',
             MessageType = {
                 SessionStart: 1,
                 SessionEnd: 2,
@@ -312,16 +312,16 @@ var mpGoogleAnalyticsKit = (function (exports) {
 
                         sendEcommerceEvent(event.EventCategory, outputDimensionsAndMetrics, customFlags);
                     }
-                    else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.Checkout) {
+                    else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.Checkout || event.ProductAction.ProductActionType == mParticle.ProductActionType.CheckoutOption) {
                         event.ProductAction.ProductList.forEach(function(product) {
                             var updatedProductDimentionAndMetrics = {};
                             applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
                             addEcommerceProduct(product, updatedProductDimentionAndMetrics);
                         });
 
-                        ga(createCmd('ec:setAction'), 'checkout', {
-                            step: event.ProductAction.CheckoutStep,
-                            option: event.ProductAction.CheckoutOptions
+                        ga(createCmd('ec:setAction'), event.ProductAction.ProductActionType == mParticle.ProductActionType.Checkout ? 'checkout' : 'checkout_option', {
+                            step: event.ProductAction.CheckoutStep || event.EventAttributes.step || null,
+                            option: event.ProductAction.CheckoutOptions || event.EventAttributes.option || null,
                         });
 
                         sendEcommerceEvent(event.EventCategory, outputDimensionsAndMetrics, customFlags);
