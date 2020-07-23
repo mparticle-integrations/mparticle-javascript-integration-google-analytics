@@ -2,6 +2,10 @@
 
 --
 
+#### 2.0.6 - 2020-07-23
+
+-   Feat - support "checkout option" events
+
 #### 2.0.5 - 2020-05-07
 
 -   Bugfix - hash customer id on reloads

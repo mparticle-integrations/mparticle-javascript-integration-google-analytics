@@ -895,6 +895,58 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
+    it('should log a checkout option', function(done) {
+        var event = {
+            EventDataType: MessageType.Commerce,
+            EventAttributes: {
+                step: 1,
+                option: 'fedex',
+            },
+            EventCategory: CommerceEventType.ProductCheckout,
+            ProductAction: {
+                ProductActionType: ProductActionType.CheckoutOption,
+                ProductList: [
+                    {
+                        Sku: '12345',
+                        Quantity: 1,
+                    },
+                ],
+            },
+        };
+
+        mParticle.forwarder.process(event);
+        debugger;
+
+        window.googleanalytics.args[0][0].should.equal(
+            'tracker-name.ec:addProduct'
+        );
+        window.googleanalytics.args[0][1].should.have.property('id', '12345');
+        window.googleanalytics.args[0][1].should.have.property('quantity', 1);
+
+        window.googleanalytics.args[1][0].should.equal(
+            'tracker-name.ec:setAction'
+        );
+        window.googleanalytics.args[1][1].should.equal('checkout_option');
+        window.googleanalytics.args[1][2].should.have.property('step', 1);
+        window.googleanalytics.args[1][2].should.have.property(
+            'option',
+            'fedex'
+        );
+
+        window.googleanalytics.args[2][0].should.equal('tracker-name.send');
+        window.googleanalytics.args[2][1].should.equal('event');
+        window.googleanalytics.args[2][2].should.equal('eCommerce');
+        window.googleanalytics.args[2][3].should.equal('Product Checkout');
+
+        window.googleanalytics.args = [];
+
+        event.CustomFlags = { 'Google.HitType': 'abcdef' };
+        mParticle.forwarder.process(event);
+        window.googleanalytics.args[2][1].should.equal('abcdef');
+
+        done();
+    });
+
     it('should log product click', function(done) {
         var event = {
             EventDataType: MessageType.Commerce,
