@@ -11,7 +11,7 @@
     "repository": "https://github.com/mparticle-integrations/mparticle-javascript-integration-google-analytics",
     "scripts": {
         "build": "rollup --config rollup.config.js",
-        "test": "node test/boilerplate/test-karma.js",
+        "test": "npm run build && node test/boilerplate/test-karma.js",
         "watch": "rollup --config rollup.config.js -w"
     },
     "devDependencies": {
