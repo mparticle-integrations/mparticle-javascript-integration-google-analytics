@@ -2,6 +2,10 @@
 
 --
 
+#### 2.0.7 - 2020-07-28
+
+-   Update npm test script
+
 #### 2.0.6 - 2020-07-23
 
 -   Feat - support "checkout option" events
