@@ -35,6 +35,8 @@
         VALUE = 'Google.Value',
         USERTIMING = 'Google.UserTiming',
         HITTYPE = 'Google.HitType';
+        CONTENTGROUPNUMBER = 'Google.CGNumber';
+        CONTENTGROUPVALUE = 'Google.CGValue';
 
     var constructor = function() {
         var self = this,
@@ -453,7 +455,7 @@
             }
         }
 
-        function initForwarder(settings, service, testMode, tid) {
+        function initForwarder(settings, service, testMode, tid, userAttributes, userIdentities, appVersion, appName, customFlags, clientId) {
             try {
                 forwarderSettings = settings;
                 reportingService = service;
@@ -511,6 +513,13 @@
                     }
 
                     ga('create', fieldsObject);
+
+                    var contentGroupNumber = customFlags[CONTENTGROUPNUMBER];
+                    var contentGroupValue = customFlags[CONTENTGROUPVALUE];
+
+                    if (contentGroupNumber && contentGroupValue) {
+                        ga(createCmd('set'), contentGroupNumber, contentGroupValue);
+                    }
 
                     if (forwarderSettings.useDisplayFeatures == 'True') {
                         ga(createCmd('require'), 'displayfeatures');

@@ -227,6 +227,7 @@ describe('Google Analytics Forwarder', function() {
     });
 
     it('should set a hashed customerid when initializing in v2', function(done) {
+        debugger;
         window.googleanalytics.reset();
 
         mParticle.forwarder.init(
@@ -915,7 +916,6 @@ describe('Google Analytics Forwarder', function() {
         };
 
         mParticle.forwarder.process(event);
-        debugger;
 
         window.googleanalytics.args[0][0].should.equal(
             'tracker-name.ec:addProduct'
@@ -1549,6 +1549,41 @@ describe('Google Analytics Forwarder', function() {
         window.googleanalytics.args[1][1].hitType.should.equal('timing');
         window.googleanalytics.args[1][1].timingCategory.should.equal(
             'Location'
+        );
+
+        done();
+    });
+
+    it('should set a content group when initialized with the proper custom flags', function(done) {
+        window.googleanalytics.reset();
+
+        mParticle.forwarder.init(
+            {
+                clientIdentificationType: 'AMP',
+            },
+            reportService.cb,
+            true,
+            'tracker-name',
+            null,
+            null,
+            null,
+            null,
+            {
+                'Google.CGNumber': 'contentGroup5',
+                'Google.CGValue': '/abc/def/',
+            }
+        );
+
+        window.googleanalytics.args[0][0].should.equal('create');
+        debugger;
+        window.googleanalytics.args[0][1].should.have.properties(
+            'name',
+            'trackingId',
+            'useAmpClientId'
+        );
+        window.googleanalytics.args[0][1].should.have.property(
+            'useAmpClientId',
+            true
         );
 
         done();
