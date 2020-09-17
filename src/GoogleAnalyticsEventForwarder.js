@@ -517,11 +517,12 @@
                     if (customFlags) {
                         var contentGroupNumber = customFlags[CONTENTGROUPNUMBER];
                         var contentGroupValue = customFlags[CONTENTGROUPVALUE];
+
+                        if (contentGroupNumber && contentGroupValue) {
+                            ga(createCmd('set'), contentGroupNumber, contentGroupValue);
+                        }
                     }
 
-                    if (contentGroupNumber && contentGroupValue) {
-                        ga(createCmd('set'), contentGroupNumber, contentGroupValue);
-                    }
 
                     if (forwarderSettings.useDisplayFeatures == 'True') {
                         ga(createCmd('require'), 'displayfeatures');
