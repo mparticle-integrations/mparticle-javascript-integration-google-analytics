@@ -519,7 +519,7 @@
                         var contentGroupValue = customFlags[CONTENTGROUPVALUE];
 
                         if (contentGroupNumber && contentGroupValue) {
-                            ga(createCmd('set'), contentGroupNumber, contentGroupValue);
+                            ga(createCmd('set'), 'contentGroup'.concat(contentGroupNumber), contentGroupValue);
                         }
                     }
 

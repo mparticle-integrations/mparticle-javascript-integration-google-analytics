@@ -1568,7 +1568,7 @@ describe('Google Analytics Forwarder', function() {
             null,
             null,
             {
-                'Google.CGNumber': 'contentGroup5',
+                'Google.CGNumber': '5',
                 'Google.CGValue': '/abc/def/',
             }
         );
