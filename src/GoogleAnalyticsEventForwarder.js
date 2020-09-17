@@ -514,8 +514,10 @@
 
                     ga('create', fieldsObject);
 
-                    var contentGroupNumber = customFlags[CONTENTGROUPNUMBER];
-                    var contentGroupValue = customFlags[CONTENTGROUPVALUE];
+                    if (customFlags) {
+                        var contentGroupNumber = customFlags[CONTENTGROUPNUMBER];
+                        var contentGroupValue = customFlags[CONTENTGROUPVALUE];
+                    }
 
                     if (contentGroupNumber && contentGroupValue) {
                         ga(createCmd('set'), contentGroupNumber, contentGroupValue);

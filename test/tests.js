@@ -227,7 +227,6 @@ describe('Google Analytics Forwarder', function() {
     });
 
     it('should set a hashed customerid when initializing in v2', function(done) {
-        debugger;
         window.googleanalytics.reset();
 
         mParticle.forwarder.init(
@@ -1575,16 +1574,9 @@ describe('Google Analytics Forwarder', function() {
         );
 
         window.googleanalytics.args[0][0].should.equal('create');
-        debugger;
-        window.googleanalytics.args[0][1].should.have.properties(
-            'name',
-            'trackingId',
-            'useAmpClientId'
-        );
-        window.googleanalytics.args[0][1].should.have.property(
-            'useAmpClientId',
-            true
-        );
+        window.googleanalytics.args[1][0].should.equal('tracker-name.set');
+        window.googleanalytics.args[1][1].should.equal('contentGroup5');
+        window.googleanalytics.args[1][2].should.equal('/abc/def/');
 
         done();
     });
