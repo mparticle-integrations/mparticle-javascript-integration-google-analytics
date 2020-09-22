@@ -1580,4 +1580,86 @@ describe('Google Analytics Forwarder', function() {
 
         done();
     });
+
+    it('should set a content group on a regular event log when customFlags are set', function(done) {
+        mParticle.forwarder.process({
+            EventDataType: MessageType.PageEvent,
+            EventName: 'Test Page Event',
+            CustomFlags: {
+                'Google.CGNumber': '3',
+                'Google.CGValue': 'abc',
+            },
+            EventCategory: EventType.Location,
+        });
+
+        window.googleanalytics.args[0][0].should.equal('tracker-name.set');
+        window.googleanalytics.args[0][1].should.equal('contentGroup3');
+        window.googleanalytics.args[0][2].should.equal('abc');
+
+        window.googleanalytics.args[1][0].should.equal('tracker-name.send');
+        window.googleanalytics.args[1][1].should.equal('event');
+        window.googleanalytics.args[1][2].should.equal('Location');
+        window.googleanalytics.args[1][3].should.equal('Test Page Event');
+
+        done();
+    });
+
+    it('should set a content group on a commerce event log when customFlags are set', function(done) {
+        mParticle.forwarder.process({
+            EventName: 'eCommerce - Purchase',
+            EventDataType: MessageType.Commerce,
+            EventCategory: CommerceEventType.ProductPurchase,
+            ProductAction: {
+                ProductActionType: ProductActionType.Purchase,
+                ProductList: [
+                    {
+                        Sku: '12345',
+                        Name: 'iPhone 6',
+                        Category: 'Phones',
+                        Brand: 'iPhone',
+                        Variant: '6',
+                        Price: 400,
+                        CouponCode: null,
+                        Quantity: 1,
+                    },
+                ],
+                TransactionId: 123,
+                Affiliation: 'my-affiliation',
+                TotalAmount: 450,
+                TaxAmount: 40,
+                ShippingAmount: 10,
+                CouponCode: null,
+            },
+            CustomFlags: {
+                'Google.CGNumber': '2',
+                'Google.CGValue': 'abc',
+            },
+        });
+
+        window.googleanalytics.args[0][0].should.equal('tracker-name.set');
+        window.googleanalytics.args[0][1].should.equal('contentGroup2');
+        window.googleanalytics.args[0][2].should.equal('abc');
+
+        done();
+    });
+
+    it('should set a content group on a page view when customFlags are set', function(done) {
+        var event = {
+            EventDataType: MessageType.PageView,
+            CustomFlags: {
+                'Google.CGNumber': '2',
+                'Google.CGValue': 'abc',
+            },
+        };
+        mParticle.forwarder.process(event);
+
+        window.googleanalytics.args[0][0].should.equal('tracker-name.set');
+        window.googleanalytics.args[0][1].should.equal('contentGroup2');
+        window.googleanalytics.args[0][2].should.equal('abc');
+
+        window.googleanalytics.args[1][0].should.equal('tracker-name.send');
+        window.googleanalytics.args[1][1].should.equal('pageview');
+
+        done();
+    });
 });

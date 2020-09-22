@@ -118,6 +118,7 @@
             if (flags.hasOwnProperty(NON_INTERACTION_FLAG)) {
                 outputDimensionsAndMetrics['nonInteraction'] = flags[NON_INTERACTION_FLAG];
             }
+            setContentGroup(flags);
         }
 
         function processEvent(event) {
@@ -514,15 +515,7 @@
 
                     ga('create', fieldsObject);
 
-                    if (customFlags) {
-                        var contentGroupNumber = customFlags[CONTENTGROUPNUMBER];
-                        var contentGroupValue = customFlags[CONTENTGROUPVALUE];
-
-                        if (contentGroupNumber && contentGroupValue) {
-                            ga(createCmd('set'), 'contentGroup'.concat(contentGroupNumber), contentGroupValue);
-                        }
-                    }
-
+                    setContentGroup(customFlags);
 
                     if (forwarderSettings.useDisplayFeatures == 'True') {
                         ga(createCmd('require'), 'displayfeatures');
@@ -569,6 +562,17 @@
             }
             catch (e) {
                 return 'Failed to initialize: ' + name;
+            }
+        }
+
+        function setContentGroup(customFlags) {
+            if (customFlags) {
+                var contentGroupNumber = customFlags[CONTENTGROUPNUMBER];
+                var contentGroupValue = customFlags[CONTENTGROUPVALUE];
+
+                if (contentGroupNumber && contentGroupValue) {
+                    ga(createCmd('set'), 'contentGroup'.concat(contentGroupNumber), contentGroupValue);
+                }
             }
         }
 
