@@ -35,6 +35,8 @@
         VALUE = 'Google.Value',
         USERTIMING = 'Google.UserTiming',
         HITTYPE = 'Google.HitType';
+        CONTENTGROUPNUMBER = 'Google.CGNumber';
+        CONTENTGROUPVALUE = 'Google.CGValue';
 
     var constructor = function() {
         var self = this,
@@ -116,6 +118,7 @@
             if (flags.hasOwnProperty(NON_INTERACTION_FLAG)) {
                 outputDimensionsAndMetrics['nonInteraction'] = flags[NON_INTERACTION_FLAG];
             }
+            setContentGroup(flags);
         }
 
         function processEvent(event) {
@@ -453,7 +456,7 @@
             }
         }
 
-        function initForwarder(settings, service, testMode, tid) {
+        function initForwarder(settings, service, testMode, tid, userAttributes, userIdentities, appVersion, appName, customFlags, clientId) {
             try {
                 forwarderSettings = settings;
                 reportingService = service;
@@ -512,6 +515,8 @@
 
                     ga('create', fieldsObject);
 
+                    setContentGroup(customFlags);
+
                     if (forwarderSettings.useDisplayFeatures == 'True') {
                         ga(createCmd('require'), 'displayfeatures');
                     }
@@ -557,6 +562,17 @@
             }
             catch (e) {
                 return 'Failed to initialize: ' + name;
+            }
+        }
+
+        function setContentGroup(customFlags) {
+            if (customFlags) {
+                var contentGroupNumber = customFlags[CONTENTGROUPNUMBER];
+                var contentGroupValue = customFlags[CONTENTGROUPVALUE];
+
+                if (contentGroupNumber && contentGroupValue) {
+                    ga(createCmd('set'), 'contentGroup'.concat(contentGroupNumber), contentGroupValue);
+                }
             }
         }
 
