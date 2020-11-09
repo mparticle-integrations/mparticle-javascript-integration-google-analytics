@@ -32,7 +32,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
         NON_INTERACTION_FLAG = 'Google.NonInteraction',
         CATEGORY = 'Google.Category',
         LABEL = 'Google.Label',
-        TITLE = 'Google.Title';
+        TITLE = 'Google.Title',
         PAGE = 'Google.Page',
         VALUE = 'Google.Value',
         USERTIMING = 'Google.UserTiming',
