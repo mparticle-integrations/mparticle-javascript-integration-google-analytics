@@ -5,34 +5,18 @@ export default [
     {
         input: 'src/GoogleAnalyticsEventForwarder.js',
         output: {
-            file: 'GoogleAnalyticsEventForwarder.js',
-            format: 'iife',
-            exports: 'named',
-            name: 'mpGoogleAnalyticsKit',
-            strict: false
-        },
-        plugins: [
-            resolve({
-                browser: true
-            }),
-            commonjs()
-        ]
-    },
-    {
-        input: 'src/GoogleAnalyticsEventForwarder.js',
-        output: {
             file: 'dist/GoogleAnalyticsEventForwarder.iife.js',
             format: 'iife',
             exports: 'named',
             name: 'mpGoogleAnalyticsKit',
-            strict: false
+            strict: false,
         },
         plugins: [
             resolve({
-                browser: true
+                browser: true,
             }),
-            commonjs()
-        ]
+            commonjs(),
+        ],
     },
     {
         input: 'src/GoogleAnalyticsEventForwarder.js',
@@ -41,13 +25,13 @@ export default [
             format: 'cjs',
             exports: 'named',
             name: 'mpGoogleAnalyticsKit',
-            strict: false
+            strict: false,
         },
         plugins: [
             resolve({
-                browser: true
+                browser: true,
             }),
-            commonjs()
-        ]
-    }
-]
+            commonjs(),
+        ],
+    },
+];
