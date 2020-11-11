@@ -2,6 +2,11 @@
 
 --
 
+#### 2.1.3 - 2020-11-12
+
+-   Update version to 2.1.3
+      - There are no code changes in this commit. 2.1.2 was published but with the dist/ file from 2.1.1. This commit will include the correct dist/ file as we bump to 2.1.3 which corrects self hosting issues.
+
 #### 2.1.2 - 2020-11-11
 
 -   Remove build from root of project and update rollup file
