@@ -2,6 +2,18 @@
 
 --
 
+#### 2.1.2 - 2020-11-11
+
+-   Remove build from root of project and update rollup file
+
+#### 2.1.1 - 2020-11-09
+
+-   Bugfix - Add missing comma
+
+#### 2.1.0 - 2020-09-23
+
+-   Feat - Add content groups
+
 #### 2.0.7 - 2020-07-28
 
 -   Update npm test script
