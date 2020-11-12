@@ -17,7 +17,7 @@ var mpGoogleAnalyticsKit = (function (exports) {
 
         var name = 'GoogleAnalyticsEventForwarder',
             moduleId = 6,
-            version = '2.1.3',
+            version = '2.1.4',
             MessageType = {
                 SessionStart: 1,
                 SessionEnd: 2,
@@ -35,8 +35,8 @@ var mpGoogleAnalyticsKit = (function (exports) {
             PAGE = 'Google.Page',
             VALUE = 'Google.Value',
             USERTIMING = 'Google.UserTiming',
-            HITTYPE = 'Google.HitType';
-            CONTENTGROUPNUMBER = 'Google.CGNumber';
+            HITTYPE = 'Google.HitType',
+            CONTENTGROUPNUMBER = 'Google.CGNumber',
             CONTENTGROUPVALUE = 'Google.CGValue';
 
         var constructor = function() {

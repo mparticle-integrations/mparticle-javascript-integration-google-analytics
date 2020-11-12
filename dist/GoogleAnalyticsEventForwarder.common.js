@@ -18,7 +18,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
     var name = 'GoogleAnalyticsEventForwarder',
         moduleId = 6,
-        version = '2.1.3',
+        version = '2.1.4',
         MessageType = {
             SessionStart: 1,
             SessionEnd: 2,
@@ -36,8 +36,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
         PAGE = 'Google.Page',
         VALUE = 'Google.Value',
         USERTIMING = 'Google.UserTiming',
-        HITTYPE = 'Google.HitType';
-        CONTENTGROUPNUMBER = 'Google.CGNumber';
+        HITTYPE = 'Google.HitType',
+        CONTENTGROUPNUMBER = 'Google.CGNumber',
         CONTENTGROUPVALUE = 'Google.CGValue';
 
     var constructor = function() {
