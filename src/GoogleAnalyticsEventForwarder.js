@@ -34,8 +34,8 @@
         PAGE = 'Google.Page',
         VALUE = 'Google.Value',
         USERTIMING = 'Google.UserTiming',
-        HITTYPE = 'Google.HitType';
-        CONTENTGROUPNUMBER = 'Google.CGNumber';
+        HITTYPE = 'Google.HitType',
+        CONTENTGROUPNUMBER = 'Google.CGNumber',
         CONTENTGROUPVALUE = 'Google.CGValue';
 
     var constructor = function() {
