@@ -1,6 +1,11 @@
 ## Releases
 
 --
+#### 2.1.5 - 2020-11-12
+-   Update version to 2.1.5
+      - There are no code changes in this commit. 2.1.4 was published but with the dist/ file from 2.1.3. This commit will include the correct dist/ file as we bump to 2.1.4 which corrects self hosting issues.
+
+
 #### 2.1.4 - 2020-11-12
 
 -   Replace semi-colons with commas for the multi-line var declaration.
