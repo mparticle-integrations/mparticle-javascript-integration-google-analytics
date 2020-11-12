@@ -1,6 +1,9 @@
 ## Releases
 
 --
+#### 2.1.4 - 2020-11-12
+
+-   Replace semi-colons with commas for the multi-line var declaration.
 
 #### 2.1.3 - 2020-11-12
 
