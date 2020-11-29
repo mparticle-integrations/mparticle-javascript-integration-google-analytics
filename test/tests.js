@@ -1633,7 +1633,7 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    it.only('should set a content group on a commerce event log when customFlags are set', function(done) {
+    it('should set a content group on a commerce event log when customFlags are set', function(done) {
         mParticle.forwarder.process({
             EventName: 'eCommerce - Purchase',
             EventDataType: MessageType.Commerce,
@@ -1667,24 +1667,24 @@ describe('Google Analytics Forwarder', function() {
                 'Google.CG5': 'value5',
             },
         });
-
-        window.googleanalytics.args[3][4].should.have.property(
+        console.log(window.googleanalytics.args);
+        window.googleanalytics.args[2][4].should.have.property(
             'contentGroup1',
             'value1'
         );
-        window.googleanalytics.args[3][4].should.have.property(
+        window.googleanalytics.args[2][4].should.have.property(
             'contentGroup2',
             'value2'
         );
-        window.googleanalytics.args[3][4].should.have.property(
+        window.googleanalytics.args[2][4].should.have.property(
             'contentGroup3',
             'value3'
         );
-        window.googleanalytics.args[3][4].should.have.property(
+        window.googleanalytics.args[2][4].should.have.property(
             'contentGroup4',
             'value4'
         );
-        window.googleanalytics.args[3][4].should.have.property(
+        window.googleanalytics.args[2][4].should.have.property(
             'contentGroup5',
             'value5'
         );
