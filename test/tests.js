@@ -1553,30 +1553,41 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
-    it('should set a content group when initialized with the proper custom flags', function(done) {
-        window.googleanalytics.reset();
-
-        mParticle.forwarder.init(
-            {
-                clientIdentificationType: 'AMP',
+    it('should set a content group on a page view when customFlags are set', function(done) {
+        var event = {
+            EventDataType: MessageType.PageView,
+            CustomFlags: {
+                'Google.CG1': 'value1',
+                'Google.CG2': 'value2',
+                'Google.CG3': 'value3',
+                'Google.CG4': 'value4',
+                'Google.CG5': 'value5',
             },
-            reportService.cb,
-            true,
-            'tracker-name',
-            null,
-            null,
-            null,
-            null,
-            {
-                'Google.CGNumber': '5',
-                'Google.CGValue': '/abc/def/',
-            }
-        );
+        };
+        mParticle.forwarder.process(event);
 
-        window.googleanalytics.args[0][0].should.equal('create');
-        window.googleanalytics.args[1][0].should.equal('tracker-name.set');
-        window.googleanalytics.args[1][1].should.equal('contentGroup5');
-        window.googleanalytics.args[1][2].should.equal('/abc/def/');
+        window.googleanalytics.args[0][0].should.equal('tracker-name.send');
+        window.googleanalytics.args[0][1].should.equal('pageview');
+        window.googleanalytics.args[0][2].should.have.property(
+            'contentGroup1',
+            'value1'
+        );
+        window.googleanalytics.args[0][2].should.have.property(
+            'contentGroup2',
+            'value2'
+        );
+        window.googleanalytics.args[0][2].should.have.property(
+            'contentGroup3',
+            'value3'
+        );
+        window.googleanalytics.args[0][2].should.have.property(
+            'contentGroup4',
+            'value4'
+        );
+        window.googleanalytics.args[0][2].should.have.property(
+            'contentGroup5',
+            'value5'
+        );
 
         done();
     });
@@ -1586,25 +1597,43 @@ describe('Google Analytics Forwarder', function() {
             EventDataType: MessageType.PageEvent,
             EventName: 'Test Page Event',
             CustomFlags: {
-                'Google.CGNumber': '3',
-                'Google.CGValue': 'abc',
+                'Google.CG1': 'value1',
+                'Google.CG2': 'value2',
+                'Google.CG3': 'value3',
+                'Google.CG4': 'value4',
+                'Google.CG5': 'value5',
             },
             EventCategory: EventType.Location,
         });
-
-        window.googleanalytics.args[0][0].should.equal('tracker-name.set');
-        window.googleanalytics.args[0][1].should.equal('contentGroup3');
-        window.googleanalytics.args[0][2].should.equal('abc');
-
-        window.googleanalytics.args[1][0].should.equal('tracker-name.send');
-        window.googleanalytics.args[1][1].should.equal('event');
-        window.googleanalytics.args[1][2].should.equal('Location');
-        window.googleanalytics.args[1][3].should.equal('Test Page Event');
+        window.googleanalytics.args[0][0].should.equal('tracker-name.send');
+        window.googleanalytics.args[0][1].should.equal('event');
+        window.googleanalytics.args[0][2].should.equal('Location');
+        window.googleanalytics.args[0][3].should.equal('Test Page Event');
+        window.googleanalytics.args[0][6].should.have.property(
+            'contentGroup1',
+            'value1'
+        );
+        window.googleanalytics.args[0][6].should.have.property(
+            'contentGroup2',
+            'value2'
+        );
+        window.googleanalytics.args[0][6].should.have.property(
+            'contentGroup3',
+            'value3'
+        );
+        window.googleanalytics.args[0][6].should.have.property(
+            'contentGroup4',
+            'value4'
+        );
+        window.googleanalytics.args[0][6].should.have.property(
+            'contentGroup5',
+            'value5'
+        );
 
         done();
     });
 
-    it('should set a content group on a commerce event log when customFlags are set', function(done) {
+    it.only('should set a content group on a commerce event log when customFlags are set', function(done) {
         mParticle.forwarder.process({
             EventName: 'eCommerce - Purchase',
             EventDataType: MessageType.Commerce,
@@ -1631,35 +1660,147 @@ describe('Google Analytics Forwarder', function() {
                 CouponCode: null,
             },
             CustomFlags: {
-                'Google.CGNumber': '2',
-                'Google.CGValue': 'abc',
+                'Google.CG1': 'value1',
+                'Google.CG2': 'value2',
+                'Google.CG3': 'value3',
+                'Google.CG4': 'value4',
+                'Google.CG5': 'value5',
             },
         });
 
-        window.googleanalytics.args[0][0].should.equal('tracker-name.set');
-        window.googleanalytics.args[0][1].should.equal('contentGroup2');
-        window.googleanalytics.args[0][2].should.equal('abc');
+        window.googleanalytics.args[3][4].should.have.property(
+            'contentGroup1',
+            'value1'
+        );
+        window.googleanalytics.args[3][4].should.have.property(
+            'contentGroup2',
+            'value2'
+        );
+        window.googleanalytics.args[3][4].should.have.property(
+            'contentGroup3',
+            'value3'
+        );
+        window.googleanalytics.args[3][4].should.have.property(
+            'contentGroup4',
+            'value4'
+        );
+        window.googleanalytics.args[3][4].should.have.property(
+            'contentGroup5',
+            'value5'
+        );
 
         done();
     });
 
-    it('should set a content group on a page view when customFlags are set', function(done) {
-        var event = {
-            EventDataType: MessageType.PageView,
-            CustomFlags: {
-                'Google.CGNumber': '2',
-                'Google.CGValue': 'abc',
-            },
-        };
-        mParticle.forwarder.process(event);
+    describe('ContentGroup tests to be deprecated on 3/1/2021', function() {
+        it('should set a content group when initialized with the proper custom flags', function(done) {
+            window.googleanalytics.reset();
 
-        window.googleanalytics.args[0][0].should.equal('tracker-name.set');
-        window.googleanalytics.args[0][1].should.equal('contentGroup2');
-        window.googleanalytics.args[0][2].should.equal('abc');
+            mParticle.forwarder.init(
+                {
+                    clientIdentificationType: 'AMP',
+                },
+                reportService.cb,
+                true,
+                'tracker-name',
+                null,
+                null,
+                null,
+                null,
+                {
+                    'Google.CGNumber': '5',
+                    'Google.CGValue': '/abc/def/',
+                }
+            );
 
-        window.googleanalytics.args[1][0].should.equal('tracker-name.send');
-        window.googleanalytics.args[1][1].should.equal('pageview');
+            window.googleanalytics.args[0][0].should.equal('create');
+            window.googleanalytics.args[1][0].should.equal('tracker-name.set');
+            window.googleanalytics.args[1][1].should.equal('contentGroup5');
+            window.googleanalytics.args[1][2].should.equal('/abc/def/');
 
-        done();
+            done();
+        });
+
+        it('should set a content group on a regular event log when customFlags are set', function(done) {
+            mParticle.forwarder.process({
+                EventDataType: MessageType.PageEvent,
+                EventName: 'Test Page Event',
+                CustomFlags: {
+                    'Google.CGNumber': '3',
+                    'Google.CGValue': 'abc',
+                },
+                EventCategory: EventType.Location,
+            });
+
+            window.googleanalytics.args[0][0].should.equal('tracker-name.set');
+            window.googleanalytics.args[0][1].should.equal('contentGroup3');
+            window.googleanalytics.args[0][2].should.equal('abc');
+
+            window.googleanalytics.args[1][0].should.equal('tracker-name.send');
+            window.googleanalytics.args[1][1].should.equal('event');
+            window.googleanalytics.args[1][2].should.equal('Location');
+            window.googleanalytics.args[1][3].should.equal('Test Page Event');
+
+            done();
+        });
+
+        it('should set a content group on a commerce event log when customFlags are set', function(done) {
+            mParticle.forwarder.process({
+                EventName: 'eCommerce - Purchase',
+                EventDataType: MessageType.Commerce,
+                EventCategory: CommerceEventType.ProductPurchase,
+                ProductAction: {
+                    ProductActionType: ProductActionType.Purchase,
+                    ProductList: [
+                        {
+                            Sku: '12345',
+                            Name: 'iPhone 6',
+                            Category: 'Phones',
+                            Brand: 'iPhone',
+                            Variant: '6',
+                            Price: 400,
+                            CouponCode: null,
+                            Quantity: 1,
+                        },
+                    ],
+                    TransactionId: 123,
+                    Affiliation: 'my-affiliation',
+                    TotalAmount: 450,
+                    TaxAmount: 40,
+                    ShippingAmount: 10,
+                    CouponCode: null,
+                },
+                CustomFlags: {
+                    'Google.CGNumber': '2',
+                    'Google.CGValue': 'abc',
+                },
+            });
+
+            window.googleanalytics.args[0][0].should.equal('tracker-name.set');
+            window.googleanalytics.args[0][1].should.equal('contentGroup2');
+            window.googleanalytics.args[0][2].should.equal('abc');
+
+            done();
+        });
+
+        it('should set a content group on a page view when customFlags are set', function(done) {
+            var event = {
+                EventDataType: MessageType.PageView,
+                CustomFlags: {
+                    'Google.CGNumber': '2',
+                    'Google.CGValue': 'abc',
+                },
+            };
+            mParticle.forwarder.process(event);
+
+            window.googleanalytics.args[0][0].should.equal('tracker-name.set');
+            window.googleanalytics.args[0][1].should.equal('contentGroup2');
+            window.googleanalytics.args[0][2].should.equal('abc');
+
+            window.googleanalytics.args[1][0].should.equal('tracker-name.send');
+            window.googleanalytics.args[1][1].should.equal('pageview');
+
+            done();
+        });
     });
 });
