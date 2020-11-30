@@ -82,14 +82,14 @@
             return attr.replace(/ /g, '').toLowerCase();
         }
 
-        function applyCustomDimensionsAndMetrics(event, fieldsObject) {
+        function applyCustomDimensionsAndMetrics(event, gaOptionalParameters) {
             // apply custom dimensions and metrics to each event, product, or user if respective attributes exist
             if (event.EventAttributes && Object.keys(event.EventAttributes).length) {
-                applyCustomDimensionsMetricsForSourceAttributes(event.EventAttributes, fieldsObject, eventLevelMap);
+                applyCustomDimensionsMetricsForSourceAttributes(event.EventAttributes, gaOptionalParameters, eventLevelMap);
             }
 
             if (event.UserAttributes && Object.keys(event.UserAttributes).length) {
-                applyCustomDimensionsMetricsForSourceAttributes(event.UserAttributes, fieldsObject, userLevelMap);
+                applyCustomDimensionsMetricsForSourceAttributes(event.UserAttributes, gaOptionalParameters, userLevelMap);
             }
         }
 
@@ -119,39 +119,39 @@
             }
         }
 
-        function applyCustomFlags(flags, fieldsObject) {
+        function applyCustomFlags(flags, gaOptionalParameters) {
             if (flags.hasOwnProperty(NON_INTERACTION_FLAG)) {
-                fieldsObject['nonInteraction'] = flags[NON_INTERACTION_FLAG];
+                gaOptionalParameters['nonInteraction'] = flags[NON_INTERACTION_FLAG];
             }
         }
 
         function processEvent(event) {
-            var fieldsObject = {};
+            var gaOptionalParameters = {};
             var reportEvent = false;
 
             if (isInitialized) {
                 event.ExpandedEventCount = 0;
 
-                applyCustomDimensionsAndMetrics(event, fieldsObject);
+                applyCustomDimensionsAndMetrics(event, gaOptionalParameters);
 
                 if (event.CustomFlags && Object.keys(event.CustomFlags).length) {
-                    applyCustomFlags(event.CustomFlags, fieldsObject);
-                    applyContentGroups(event.CustomFlags, fieldsObject)
+                    applyCustomFlags(event.CustomFlags, gaOptionalParameters);
+                    applyContentGroups(event.CustomFlags, gaOptionalParameters)
                 }
 
                 try {
                     if (event.EventDataType == MessageType.PageView) {
-                        logPageView(event, fieldsObject, event.CustomFlags);
+                        logPageView(event, gaOptionalParameters, event.CustomFlags);
                         reportEvent = true;
                     }
                     else if (event.EventDataType == MessageType.Commerce) {
-                        logCommerce(event, fieldsObject, event.CustomFlags);
+                        logCommerce(event, gaOptionalParameters, event.CustomFlags);
                         reportEvent = true;
                     }
                     else if (event.EventDataType == MessageType.PageEvent) {
                         reportEvent = true;
 
-                        logEvent(event, fieldsObject, event.CustomFlags);
+                        logEvent(event, gaOptionalParameters, event.CustomFlags);
                     }
 
                     if (reportEvent && reportingService) {
@@ -229,11 +229,11 @@
             });
         }
 
-        function sendEcommerceEvent(type, fieldsObject, customFlags) {
-            ga(createCmd('send'), customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'event', 'eCommerce', getEventTypeName(type), fieldsObject);
+        function sendEcommerceEvent(type, gaOptionalParameters, customFlags) {
+            ga(createCmd('send'), customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'event', 'eCommerce', getEventTypeName(type), gaOptionalParameters);
         }
 
-        function logCommerce(event, fieldsObject, customFlags) {
+        function logCommerce(event, gaOptionalParameters, customFlags) {
             if (!isEnhancedEcommerceLoaded) {
                 ga(createCmd('require'), 'ec');
                 isEnhancedEcommerceLoaded = true;
@@ -252,7 +252,7 @@
                     });
                 });
 
-                sendEcommerceEvent(event.EventCategory, fieldsObject, customFlags);
+                sendEcommerceEvent(event.EventCategory, gaOptionalParameters, customFlags);
             }
             else if (event.PromotionAction) {
                 // Promotion event
@@ -269,7 +269,7 @@
                     ga(createCmd('ec:setAction'), 'promo_click');
                 }
 
-                sendEcommerceEvent(event.EventCategory, fieldsObject, customFlags);
+                sendEcommerceEvent(event.EventCategory, gaOptionalParameters, customFlags);
             }
             else if (event.ProductAction) {
                 if (event.ProductAction.ProductActionType == mParticle.ProductActionType.Purchase) {
@@ -288,7 +288,7 @@
                         coupon: event.ProductAction.CouponCode
                     });
 
-                    sendEcommerceEvent(event.EventCategory, fieldsObject, customFlags);
+                    sendEcommerceEvent(event.EventCategory, gaOptionalParameters, customFlags);
                 }
                 else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.Refund) {
                     if (event.ProductAction.ProductList.length) {
@@ -306,7 +306,7 @@
                         id: event.ProductAction.TransactionId
                     });
 
-                    sendEcommerceEvent(event.EventCategory, fieldsObject, customFlags);
+                    sendEcommerceEvent(event.EventCategory, gaOptionalParameters, customFlags);
                 }
                 else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.AddToCart ||
                     event.ProductAction.ProductActionType == mParticle.ProductActionType.RemoveFromCart) {
@@ -319,7 +319,7 @@
                     ga(createCmd('ec:setAction'),
                         event.ProductAction.ProductActionType == mParticle.ProductActionType.AddToCart ? 'add' : 'remove');
 
-                    sendEcommerceEvent(event.EventCategory, fieldsObject, customFlags);
+                    sendEcommerceEvent(event.EventCategory, gaOptionalParameters, customFlags);
                 }
                 else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.Checkout || event.ProductAction.ProductActionType == mParticle.ProductActionType.CheckoutOption) {
                     event.ProductAction.ProductList.forEach(function(product) {
@@ -333,7 +333,7 @@
                         option: event.ProductAction.CheckoutOptions || event.EventAttributes.option || null,
                     });
 
-                    sendEcommerceEvent(event.EventCategory, fieldsObject, customFlags);
+                    sendEcommerceEvent(event.EventCategory, gaOptionalParameters, customFlags);
                 }
                 else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.Click) {
                     event.ProductAction.ProductList.forEach(function(product) {
@@ -343,7 +343,7 @@
                     });
 
                     ga(createCmd('ec:setAction'), 'click');
-                    sendEcommerceEvent(event.EventCategory, fieldsObject, customFlags);
+                    sendEcommerceEvent(event.EventCategory, gaOptionalParameters, customFlags);
                 }
                 else if (event.ProductAction.ProductActionType == mParticle.ProductActionType.ViewDetail) {
                     event.ProductAction.ProductList.forEach(function(product) {
@@ -353,14 +353,14 @@
                     });
 
                     ga(createCmd('ec:setAction'), 'detail');
-                    ga(createCmd('send'), customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'event', 'eCommerce', getEventTypeName(event.EventCategory), fieldsObject);
+                    ga(createCmd('send'), customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'event', 'eCommerce', getEventTypeName(event.EventCategory), gaOptionalParameters);
                 }
 
-                sendOptionalUserTimingMessage(event, fieldsObject);
+                sendOptionalUserTimingMessage(event, gaOptionalParameters);
             }
         }
 
-        function logPageView(event, fieldsObject, customFlags) {
+        function logPageView(event, gaOptionalParameters, customFlags) {
             if (forwarderSettings.classicMode == 'True') {
                 _gaq.push(['_trackPageview']);
             }
@@ -371,12 +371,12 @@
                 if (event.CustomFlags && event.CustomFlags[TITLE]){
                     ga(createCmd('set'), 'title', event.CustomFlags[TITLE]);
                 }
-                ga(createCmd('send'), customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'pageview', fieldsObject);
-                sendOptionalUserTimingMessage(event, fieldsObject);
+                ga(createCmd('send'), customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'pageview', gaOptionalParameters);
+                sendOptionalUserTimingMessage(event, gaOptionalParameters);
             }
         }
 
-        function logEvent(event, fieldsObject, customFlags) {
+        function logEvent(event, gaOptionalParameters, customFlags) {
             var label = '',
                 category = getEventTypeName(event.EventCategory),
                 value;
@@ -433,14 +433,14 @@
                     event.EventName,
                     label,
                     value,
-                    fieldsObject
+                    gaOptionalParameters
                 );
 
-                sendOptionalUserTimingMessage(event, fieldsObject);
+                sendOptionalUserTimingMessage(event, gaOptionalParameters);
             }
         }
 
-        function sendOptionalUserTimingMessage(event, fieldsObject) {
+        function sendOptionalUserTimingMessage(event, gaOptionalParameters) {
             // only if there is a custom flag of Google.UserTiming should a user timing message be sent
             if (event.CustomFlags && event.CustomFlags[USERTIMING] && typeof(event.CustomFlags[USERTIMING]) === 'number') {
                 var userTimingObject = {
@@ -451,9 +451,9 @@
                     timingLabel: event.CustomFlags[LABEL] || null,
                 };
 
-                for (var key in fieldsObject) {
-                    if (fieldsObject.hasOwnProperty(key)) {
-                        userTimingObject[key] = fieldsObject[key];
+                for (var key in gaOptionalParameters) {
+                    if (gaOptionalParameters.hasOwnProperty(key)) {
+                        userTimingObject[key] = gaOptionalParameters[key];
                     }
                 }
 
@@ -506,22 +506,22 @@
                         })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
                     }
 
-                    var fieldsObject = {
+                    var gaOptionalParameters = {
                         trackingId:forwarderSettings.apiKey,
                         name: trackerId
                     };
 
                     if (forwarderSettings.useLocalhostCookie == 'True') {
-                        fieldsObject.cookieDomain = 'none';
+                        gaOptionalParameters.cookieDomain = 'none';
                     }
 
                     if (forwarderSettings.clientIdentificationType === 'AMP') {
-                        fieldsObject.useAmpClientId = true;
+                        gaOptionalParameters.useAmpClientId = true;
                     }
 
-                    ga('create', fieldsObject);
+                    ga('create', gaOptionalParameters);
 
-                    applyContentGroups(customFlags);
+                    applyContentGroups(customFlags, gaOptionalParameters);
 
                     if (forwarderSettings.useDisplayFeatures == 'True') {
                         ga(createCmd('require'), 'displayfeatures');
@@ -571,7 +571,7 @@
             }
         }
 
-        function applyContentGroups(customFlags, fieldsObject) {
+        function applyContentGroups(customFlags, gaOptionalParameters) {
             if (customFlags) {
                 var contentGroupNumber = customFlags[CONTENTGROUPNUMBER];
                 var contentGroupValue = customFlags[CONTENTGROUPVALUE];
@@ -581,21 +581,21 @@
                     ga(createCmd('set'), 'contentGroup'.concat(contentGroupNumber), contentGroupValue);
                 }
 
-                if (fieldsObject) {
+                if (gaOptionalParameters) {
                     if (customFlags.hasOwnProperty(CONTENTGROUP1)) {
-                        fieldsObject.contentGroup1 = customFlags[CONTENTGROUP1]
+                        gaOptionalParameters.contentGroup1 = customFlags[CONTENTGROUP1]
                     }
                     if (customFlags.hasOwnProperty(CONTENTGROUP2)) {
-                        fieldsObject.contentGroup2 = customFlags[CONTENTGROUP2]
+                        gaOptionalParameters.contentGroup2 = customFlags[CONTENTGROUP2]
                     }
                     if (customFlags.hasOwnProperty(CONTENTGROUP3)) {
-                        fieldsObject.contentGroup3 = customFlags[CONTENTGROUP3]
+                        gaOptionalParameters.contentGroup3 = customFlags[CONTENTGROUP3]
                     }
                     if (customFlags.hasOwnProperty(CONTENTGROUP4)) {
-                        fieldsObject.contentGroup4 = customFlags[CONTENTGROUP4]
+                        gaOptionalParameters.contentGroup4 = customFlags[CONTENTGROUP4]
                     }
                     if (customFlags.hasOwnProperty(CONTENTGROUP5)) {
-                        fieldsObject.contentGroup5 = customFlags[CONTENTGROUP5]
+                        gaOptionalParameters.contentGroup5 = customFlags[CONTENTGROUP5]
                     }
                 }
             }
