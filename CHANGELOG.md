@@ -1,6 +1,10 @@
 ## Releases
 
 --
+#### 2.1.6 - 2020-12-02
+- Feat - support multiple content groups
+      - Deprecation warning added for previous content group API ('Google.CGNumber' & 'Google.CGValue') which only allowed for a single content group to be set.  New API allows for up to 5 content groups to be set.  See docs for more details.
+
 #### 2.1.5 - 2020-11-12
 -   Update version to 2.1.5
       - There are no code changes in this commit. 2.1.4 was published but with the dist/ file from 2.1.3. This commit will include the correct dist/ file as we bump to 2.1.4 which corrects self hosting issues.
