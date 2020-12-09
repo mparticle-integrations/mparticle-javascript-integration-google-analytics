@@ -2,6 +2,10 @@
     "env": {
         "browser": true
     },
+    "globals": {
+        "ga": "readonly",
+        "_gaq": "readonly"
+    },
     "extends": ["plugin:prettier/recommended", "eslint:recommended"],
     "plugins": ["prettier"],
     "rules": {
