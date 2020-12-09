@@ -1,4 +1,3 @@
-/* eslint-disable no-undef*/
 //
 //  Copyright 2019 mParticle, Inc.
 //
@@ -95,7 +94,7 @@
 
         function applyCustomDimensionsMetricsForSourceAttributes(attributes, targetDimensionsAndMetrics, mapLevel) {
             for (var customDimension in mapLevel.customDimensions) {
-                for (attrName in attributes) {
+                for (var attrName in attributes) {
                     if (customDimension === attrName) {
                         mapLevel.customDimensions[customDimension].forEach(function(cd) {
                             if (!targetDimensionsAndMetrics[cd]) {
@@ -461,11 +460,10 @@
             }
         }
 
-        function initForwarder(settings, service, testMode, tid, userAttributes, userIdentities, appVersion, appName, customFlags, clientId) {
+        function initForwarder(settings, service, testMode, tid, userAttributes, userIdentities, appVersion, appName, customFlags) {
             try {
                 forwarderSettings = settings;
                 reportingService = service;
-                isTesting = testMode;
 
                 if (!tid) {
                     trackerId = createTrackerId();
