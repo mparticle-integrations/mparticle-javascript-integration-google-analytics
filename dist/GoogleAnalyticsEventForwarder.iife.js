@@ -16,7 +16,7 @@ var mpGoogleAnalyticsKit = (function (exports) {
 
         var name = 'GoogleAnalyticsEventForwarder',
             moduleId = 6,
-            version = '2.1.8',
+            version = '2.1.9',
             MessageType = {
                 SessionStart: 1,
                 SessionEnd: 2,
@@ -95,11 +95,11 @@ var mpGoogleAnalyticsKit = (function (exports) {
 
             function applyCustomDimensionsMetricsForSourceAttributes(attributes, targetDimensionsAndMetrics, mapLevel) {
                 for (var customDimension in mapLevel.customDimensions) {
-                    for (var attrName in attributes) {
-                        if (customDimension === attrName) {
+                    for (var attrDimName in attributes) {
+                        if (customDimension === attrDimName) {
                             mapLevel.customDimensions[customDimension].forEach(function(cd) {
                                 if (!targetDimensionsAndMetrics[cd]) {
-                                    targetDimensionsAndMetrics[cd] = attributes[attrName];
+                                    targetDimensionsAndMetrics[cd] = attributes[attrDimName];
                                 }
                             });
                         }
@@ -107,11 +107,11 @@ var mpGoogleAnalyticsKit = (function (exports) {
                 }
 
                 for (var customMetric in mapLevel.customMetrics) {
-                    for (attrName in attributes) {
-                        if (customMetric === attrName) {
+                    for (var attrMetricName in attributes) {
+                        if (customMetric === attrMetricName) {
                             mapLevel.customMetrics[customMetric].forEach(function(cm) {
                                 if (!targetDimensionsAndMetrics[cm]) {
-                                    targetDimensionsAndMetrics[cm] = attributes[attrName];
+                                    targetDimensionsAndMetrics[cm] = attributes[attrMetricName];
                                 }
                             });
                         }
