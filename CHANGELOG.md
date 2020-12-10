@@ -1,6 +1,9 @@
 ## Releases
 
 --
+#### 2.1.9 - 2020-12-10
+-   Refactor variable declaration for attrName
+
 #### 2.1.8 - 2020-12-10
 -   Bugfix - Remove unused variable, declare attrName variable 
       - This resolves an issue when self hosting and using strict mode
