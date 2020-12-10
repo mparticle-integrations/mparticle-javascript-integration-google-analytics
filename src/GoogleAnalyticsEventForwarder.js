@@ -1,4 +1,3 @@
-"use strict"
 //
 //  Copyright 2019 mParticle, Inc.
 //
