@@ -93,8 +93,10 @@
         }
 
         function applyCustomDimensionsMetricsForSourceAttributes(attributes, targetDimensionsAndMetrics, mapLevel) {
+            var attrName;
+
             for (var customDimension in mapLevel.customDimensions) {
-                for (var attrName in attributes) {
+                for (attrName in attributes) {
                     if (customDimension === attrName) {
                         mapLevel.customDimensions[customDimension].forEach(function(cd) {
                             if (!targetDimensionsAndMetrics[cd]) {
