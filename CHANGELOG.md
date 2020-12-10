@@ -1,6 +1,10 @@
 ## Releases
 
 --
+#### 2.1.8 - 2020-12-10
+-   Bugfix - Remove unused variable, declare attrName variable 
+      - This resolves an issue when self hosting and using strict mode
+
 #### 2.1.7 - 2020-12-02
 -   Update version to 2.1.7
       - There are no code changes in this commit. 2.1.6 was published but with the dist/ file from 2.1.5. This commit will include the correct dist/ file as we bump to 2.1.7 which corrects self hosting issues.
