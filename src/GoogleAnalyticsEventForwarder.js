@@ -217,15 +217,26 @@
             ga(createCmd('ec:addProduct'), productAttrs);
         }
 
-        function addEcommerceProductImpression(product) {
-            ga(createCmd('ec:addImpression'), {
+        function addEcommerceProductImpression(product, updatedProductDimentionAndMetrics) {
+            var productAttrs = {
                 id: product.Sku,
                 name: product.Name,
-                type: 'view',
                 category: product.Category,
                 brand: product.Brand,
-                variant: product.Variant
-            });
+                variant: product.Variant,
+                price: product.Price,
+                coupon: product.CouponCode,
+                quantity: product.Quantity,
+                type: 'view'
+            };
+
+            for (var attr in updatedProductDimentionAndMetrics) {
+                if (updatedProductDimentionAndMetrics.hasOwnProperty(attr)) {
+                    productAttrs[attr] = updatedProductDimentionAndMetrics[attr];
+                }
+            }
+
+            ga(createCmd('ec:addImpression'), productAttrs);
         }
 
         function sendEcommerceEvent(type, gaOptionalParameters, customFlags) {
@@ -247,7 +258,9 @@
                 // Impression event
                 event.ProductImpressions.forEach(function(impression) {
                     impression.ProductList.forEach(function(product) {
-                        addEcommerceProductImpression(product);
+                        var updatedProductDimentionAndMetrics = {};
+                        applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
+                        addEcommerceProductImpression(product, updatedProductDimentionAndMetrics);
                     });
                 });
 
@@ -487,7 +500,6 @@
                             if (forwarderSettings.useDisplayFeatures == 'True') {
                                 ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
                             } else {
-                                
                                 ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
                             }
                             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
@@ -557,7 +569,7 @@
                 }
 
                 isInitialized = true;
-                
+
                 if (window.mParticle.getVersion().split('.')[0] === '2') {
                     onUserIdentified(mParticle.Identity.getCurrentUser());
                 }

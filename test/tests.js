@@ -481,6 +481,86 @@ describe('Google Analytics Forwarder', function() {
         mParticle.forwarder.process(event);
         window.googleanalytics.args[2][1].should.equal('abcdef');
 
+        window.googleanalytics.args = [];
+
+        done();
+    });
+
+    it('should log custom dimensions and metrics with a product impression', function(done) {
+        var event = {
+            EventDataType: MessageType.Commerce,
+            EventCategory: CommerceEventType.ProductImpression,
+            ProductImpressions: [
+                {
+                    ProductionImpressionList: 'testImp',
+                    ProductList: [
+                        {
+                            Sku: '12345',
+                            Name: 'iPhone 6',
+                            Category: 'Phones',
+                            Brand: 'iPhone',
+                            Variant: '6',
+                            Price: 400,
+                            CouponCode: null,
+                            Quantity: 1,
+                            Attributes: {
+                                gender: 'female',
+                                color: 'blue',
+                                size: 'large',
+                                levels: 1,
+                                shots: 15,
+                                players: 3,
+                            },
+                            TotalAmount: 100,
+                        },
+                    ],
+                },
+            ],
+        };
+
+        mParticle.forwarder.process(event);
+
+        window.googleanalytics.args[0][0].should.equal(
+            'tracker-name.ec:addImpression'
+        );
+        window.googleanalytics.args[0][1].should.have.property('id', '12345');
+        window.googleanalytics.args[0][1].should.have.property(
+            'name',
+            'iPhone 6'
+        );
+        window.googleanalytics.args[0][1].should.have.property(
+            'category',
+            'Phones'
+        );
+        window.googleanalytics.args[0][1].should.have.property(
+            'brand',
+            'iPhone'
+        );
+        window.googleanalytics.args[0][1].should.have.property('variant', '6');
+        window.googleanalytics.args[0][1].should.have.property('price', 400);
+        window.googleanalytics.args[0][1].should.have.property('coupon', null);
+        window.googleanalytics.args[0][1].should.have.property('quantity', 1);
+        window.googleanalytics.args[0][1].should.have.property(
+            'dimension1',
+            'blue'
+        );
+        window.googleanalytics.args[0][1].should.have.property(
+            'dimension2',
+            'female'
+        );
+        window.googleanalytics.args[0][1].should.have.property(
+            'dimension3',
+            'large'
+        );
+        window.googleanalytics.args[0][1].should.have.property('metric1', 1);
+        window.googleanalytics.args[0][1].should.have.property('metric2', 15);
+        window.googleanalytics.args[0][1].should.have.property('metric3', 3);
+
+        window.googleanalytics.args[1][0].should.equal('tracker-name.send');
+        window.googleanalytics.args[1][1].should.equal('event');
+        window.googleanalytics.args[1][2].should.equal('eCommerce');
+        window.googleanalytics.args[1][3].should.equal('Product Impression');
+
         done();
     });
 
