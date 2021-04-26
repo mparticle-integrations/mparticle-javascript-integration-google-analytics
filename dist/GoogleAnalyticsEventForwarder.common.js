@@ -17,7 +17,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
     var name = 'GoogleAnalyticsEventForwarder',
         moduleId = 6,
-        version = '2.1.9',
+        version = '2.1.10',
         MessageType = {
             SessionStart: 1,
             SessionEnd: 2,
@@ -217,15 +217,26 @@ Object.defineProperty(exports, '__esModule', { value: true });
             ga(createCmd('ec:addProduct'), productAttrs);
         }
 
-        function addEcommerceProductImpression(product) {
-            ga(createCmd('ec:addImpression'), {
+        function addEcommerceProductImpression(product, updatedProductDimentionAndMetrics) {
+            var productAttrs = {
                 id: product.Sku,
                 name: product.Name,
-                type: 'view',
                 category: product.Category,
                 brand: product.Brand,
-                variant: product.Variant
-            });
+                variant: product.Variant,
+                price: product.Price,
+                coupon: product.CouponCode,
+                quantity: product.Quantity,
+                type: 'view'
+            };
+
+            for (var attr in updatedProductDimentionAndMetrics) {
+                if (updatedProductDimentionAndMetrics.hasOwnProperty(attr)) {
+                    productAttrs[attr] = updatedProductDimentionAndMetrics[attr];
+                }
+            }
+
+            ga(createCmd('ec:addImpression'), productAttrs);
         }
 
         function sendEcommerceEvent(type, gaOptionalParameters, customFlags) {
@@ -247,7 +258,9 @@ Object.defineProperty(exports, '__esModule', { value: true });
                 // Impression event
                 event.ProductImpressions.forEach(function(impression) {
                     impression.ProductList.forEach(function(product) {
-                        addEcommerceProductImpression(product);
+                        var updatedProductDimentionAndMetrics = {};
+                        applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
+                        addEcommerceProductImpression(product, updatedProductDimentionAndMetrics);
                     });
                 });
 
@@ -487,7 +500,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
                             if (forwarderSettings.useDisplayFeatures == 'True') {
                                 ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
                             } else {
-                                
                                 ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
                             }
                             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
@@ -557,7 +569,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
                 }
 
                 isInitialized = true;
-                
+
                 if (window.mParticle.getVersion().split('.')[0] === '2') {
                     onUserIdentified(mParticle.Identity.getCurrentUser());
                 }
@@ -627,12 +639,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
     function register(config) {
         if (!config) {
-            window.console.log('You must pass a config object to register the kit ' + name);
+            console.log('You must pass a config object to register the kit ' + name);
             return;
         }
 
         if (!isObject(config)) {
-            window.console.log('\'config\' must be an object. You passed in a ' + typeof config);
+            console.log('\'config\' must be an object. You passed in a ' + typeof config);
             return;
         }
 
@@ -646,15 +658,17 @@ Object.defineProperty(exports, '__esModule', { value: true });
                 constructor: constructor
             };
         }
-        window.console.log('Successfully registered ' + name + ' to your mParticle configuration');
+        console.log('Successfully registered ' + name + ' to your mParticle configuration');
     }
 
-    if (window && window.mParticle && window.mParticle.addForwarder) {
-        window.mParticle.addForwarder({
-            name: name,
-            constructor: constructor,
-            getId: getId
-        });
+    if (typeof window !== 'undefined') {
+        if (window && window.mParticle && window.mParticle.addForwarder) {
+            window.mParticle.addForwarder({
+                name: name,
+                constructor: constructor,
+                getId: getId
+            });
+        }
     }
 
     var GoogleAnalyticsEventForwarder = {
