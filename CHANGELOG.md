@@ -1,6 +1,9 @@
 ## Releases
 
---
+- fix: Set custom dimensions for product impressions
+#### 2.1.10 - 2021-04-26
+-   Refactor variable declaration for attrName
+
 #### 2.1.9 - 2020-12-10
 -   Refactor variable declaration for attrName
 
