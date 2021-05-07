@@ -217,7 +217,7 @@
             ga(createCmd('ec:addProduct'), productAttrs);
         }
 
-        function addEcommerceProductImpression(product, updatedProductDimentionAndMetrics) {
+        function addEcommerceProductImpression(product, impressionListName, updatedProductDimentionAndMetrics) {
             var productAttrs = {
                 id: product.Sku,
                 name: product.Name,
@@ -227,6 +227,7 @@
                 price: product.Price,
                 coupon: product.CouponCode,
                 quantity: product.Quantity,
+                list: impressionListName,
                 type: 'view'
             };
 
@@ -257,10 +258,11 @@
             if (event.ProductImpressions) {
                 // Impression event
                 event.ProductImpressions.forEach(function(impression) {
+                    var impressionListName = impression.ProductImpressionList;
                     impression.ProductList.forEach(function(product) {
                         var updatedProductDimentionAndMetrics = {};
                         applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
-                        addEcommerceProductImpression(product, updatedProductDimentionAndMetrics);
+                        addEcommerceProductImpression(product, impressionListName, updatedProductDimentionAndMetrics);
                     });
                 });
 

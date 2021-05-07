@@ -492,7 +492,7 @@ describe('Google Analytics Forwarder', function() {
             EventCategory: CommerceEventType.ProductImpression,
             ProductImpressions: [
                 {
-                    ProductionImpressionList: 'testImp',
+                    ProductImpressionList: 'testImp',
                     ProductList: [
                         {
                             Sku: '12345',
@@ -523,6 +523,7 @@ describe('Google Analytics Forwarder', function() {
         window.googleanalytics.args[0][0].should.equal(
             'tracker-name.ec:addImpression'
         );
+        debugger;
         window.googleanalytics.args[0][1].should.have.property('id', '12345');
         window.googleanalytics.args[0][1].should.have.property(
             'name',
@@ -551,6 +552,10 @@ describe('Google Analytics Forwarder', function() {
         window.googleanalytics.args[0][1].should.have.property(
             'dimension3',
             'large'
+        );
+        window.googleanalytics.args[0][1].should.have.property(
+            'list',
+            'testImp'
         );
         window.googleanalytics.args[0][1].should.have.property('metric1', 1);
         window.googleanalytics.args[0][1].should.have.property('metric2', 15);
