@@ -523,7 +523,6 @@ describe('Google Analytics Forwarder', function() {
         window.googleanalytics.args[0][0].should.equal(
             'tracker-name.ec:addImpression'
         );
-        debugger;
         window.googleanalytics.args[0][1].should.have.property('id', '12345');
         window.googleanalytics.args[0][1].should.have.property(
             'name',
