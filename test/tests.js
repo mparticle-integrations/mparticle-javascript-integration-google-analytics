@@ -132,7 +132,21 @@ describe('Google Analytics Forwarder', function() {
                 this.event = null;
             };
         },
-        reportService = new ReportingService();
+        reportService = new ReportingService(),
+        externalUserIdentityType = {
+            none: 'None',
+            customerId: 'CustomerId',
+            other: 'Other',
+            other2: 'Other2',
+            other3: 'Other3',
+            other4: 'Other4',
+            other5: 'Other5',
+            other6: 'Other6',
+            other7: 'Other7',
+            other8: 'Other8',
+            other9: 'Other9',
+            other10: 'Other10',
+        };
 
     before(function() {
         mParticle.EventType = EventType;
@@ -189,7 +203,7 @@ describe('Google Analytics Forwarder', function() {
     beforeEach(function() {
         mParticle.forwarder.init(
             {
-                useCustomerId: 'True',
+                hashUserId: 'True',
                 customDimensions:
                     '[\
                 {&quot;maptype&quot;:&quot;EventAttributeClass.Name&quot;,&quot;value&quot;:&quot;Dimension 1&quot;,&quot;map&quot;:&quot;color&quot;},\
@@ -231,13 +245,13 @@ describe('Google Analytics Forwarder', function() {
 
         mParticle.forwarder.init(
             {
-                useCustomerId: 'True',
+                hashUserId: 'True',
+                externalUserIdentityType: externalUserIdentityType.customerId,
             },
             reportService.cb,
             true,
             'tracker-name'
         );
-
         window.googleanalytics.args[1][0].should.equal('tracker-name.set');
         window.googleanalytics.args[1][1].should.equal('userId');
         (typeof window.googleanalytics.args[1][2]).should.equal('number');
@@ -1747,7 +1761,7 @@ describe('Google Analytics Forwarder', function() {
                 'Google.CG5': 'value5',
             },
         });
-        console.log(window.googleanalytics.args);
+
         window.googleanalytics.args[2][4].should.have.property(
             'contentGroup1',
             'value1'
@@ -1882,5 +1896,109 @@ describe('Google Analytics Forwarder', function() {
 
             done();
         });
+    });
+
+    it('should not hash a user id when hashUserId is false', function(done) {
+        window.googleanalytics.reset();
+
+        mParticle.forwarder.init(
+            {
+                hashUserId: 'False',
+                externalUserIdentityType: externalUserIdentityType.customerId,
+            },
+            reportService.cb,
+            true,
+            'tracker-name'
+        );
+        window.googleanalytics.args[1][0].should.equal('tracker-name.set');
+        window.googleanalytics.args[1][1].should.equal('userId');
+
+        window.googleanalytics.args[1][2].should.equal(
+            mParticle.Identity.getCurrentUser().getUserIdentities()
+                .userIdentities.customerid
+        );
+
+        done();
+    });
+
+    it('should set the proper Other external user identity type', function(done) {
+        function resetAndInitGA(userIdType) {
+            window.googleanalytics.reset();
+            mParticle.forwarder.init(
+                {
+                    hashUserId: 'False',
+                    externalUserIdentityType: userIdType,
+                },
+                reportService.cb,
+                true,
+                'tracker-name'
+            );
+        }
+
+        mParticle.Identity.getCurrentUser = function() {
+            return {
+                getUserIdentities: function() {
+                    return {
+                        userIdentities: {
+                            other: 'other',
+                            other2: 'other2',
+                            other3: 'other3',
+                            other4: 'other4',
+                            other5: 'other5',
+                            other6: 'other6',
+                            other7: 'other7',
+                            other8: 'other8',
+                            other9: 'other9',
+                            other10: 'other10',
+                        },
+                    };
+                },
+            };
+        };
+
+        var otherIds = mParticle.Identity.getCurrentUser().getUserIdentities()
+            .userIdentities;
+        var other1 = otherIds.other;
+        var other2 = otherIds.other2;
+        var other3 = otherIds.other3;
+        var other4 = otherIds.other4;
+        var other5 = otherIds.other5;
+        var other6 = otherIds.other6;
+        var other7 = otherIds.other7;
+        var other8 = otherIds.other8;
+        var other9 = otherIds.other9;
+        var other10 = otherIds.other10;
+
+        resetAndInitGA(externalUserIdentityType.other);
+        window.googleanalytics.args[1][2].should.equal(other1);
+
+        resetAndInitGA(externalUserIdentityType.other2);
+        window.googleanalytics.args[1][2].should.equal(other2);
+
+        resetAndInitGA(externalUserIdentityType.other3);
+        window.googleanalytics.args[1][2].should.equal(other3);
+
+        resetAndInitGA(externalUserIdentityType.other4);
+        window.googleanalytics.args[1][2].should.equal(other4);
+
+        resetAndInitGA(externalUserIdentityType.other5);
+        window.googleanalytics.args[1][2].should.equal(other5);
+
+        resetAndInitGA(externalUserIdentityType.other6);
+        window.googleanalytics.args[1][2].should.equal(other6);
+
+        resetAndInitGA(externalUserIdentityType.other7);
+        window.googleanalytics.args[1][2].should.equal(other7);
+
+        resetAndInitGA(externalUserIdentityType.other8);
+        window.googleanalytics.args[1][2].should.equal(other8);
+
+        resetAndInitGA(externalUserIdentityType.other9);
+        window.googleanalytics.args[1][2].should.equal(other9);
+
+        resetAndInitGA(externalUserIdentityType.other10);
+        window.googleanalytics.args[1][2].should.equal(other10);
+
+        done();
     });
 });
