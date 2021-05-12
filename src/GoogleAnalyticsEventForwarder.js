@@ -244,7 +244,7 @@
                             userId = userIdentities.other10;
                             break;
                         default:
-                            console.warn('External identity type not found for setting identity on ' + kitName)
+                            console.warn('External identity type not found for setting identity on ' + kitName + '. User not set. Please double check your implementation.')
                     }
                 }
                 if (userId) {
