@@ -16,7 +16,7 @@ var mpGoogleAnalyticsKit = (function (exports) {
 
         var name = 'GoogleAnalyticsEventForwarder',
             moduleId = 6,
-            version = '2.1.10',
+            version = '2.1.11',
             MessageType = {
                 SessionStart: 1,
                 SessionEnd: 2,
@@ -27,6 +27,21 @@ var mpGoogleAnalyticsKit = (function (exports) {
                 Commerce: 16
             },
             trackerCount = 1,
+            externalUserIdentityType = {
+                none: 'None',
+                customerId: "CustomerId",
+                other: "Other",
+                other2: "Other2",
+                other3: "Other3",
+                other4: "Other4",
+                other5: "Other5",
+                other6: "Other6",
+                other7: "Other7",
+                other8: "Other8",
+                other9: "Other9",
+                other10: "Other10",
+            },
+
             NON_INTERACTION_FLAG = 'Google.NonInteraction',
             CATEGORY = 'Google.Category',
             LABEL = 'Google.Label',
@@ -171,7 +186,7 @@ var mpGoogleAnalyticsKit = (function (exports) {
             function setUserIdentity(id, type) {
                 if (window.mParticle.getVersion().split('.')[0] === '1') {
                     if (isInitialized) {
-                        if (forwarderSettings.useCustomerId == 'True' && type == window.mParticle.IdentityType.CustomerId) {
+                        if (forwarderSettings.hashUserId == 'True' && type == window.mParticle.IdentityType.CustomerId) {
                             if (forwarderSettings.classicMode == 'True') ;
                             else {
                                 ga(createCmd('set'), 'userId', window.mParticle.generateHash(id));
@@ -184,14 +199,67 @@ var mpGoogleAnalyticsKit = (function (exports) {
                 }
             }
 
+            function generateHash(id) {
+                return window.mParticle.generateHash(id);
+            }
+
             function onUserIdentified(user) {
-                var userIdentities = user.getUserIdentities().userIdentities;
+                if (!user) {
+                    return;
+                }
+                var userId,
+                    userIdentities = user.getUserIdentities().userIdentities;
                 if (isInitialized) {
-                    if (forwarderSettings.useCustomerId == 'True' && userIdentities.customerid) {
-                        if (forwarderSettings.classicMode !== 'True') {
-                            ga(createCmd('set'), 'userId', window.mParticle.generateHash(userIdentities.customerid));
+                    if (forwarderSettings.externalUserIdentityType !== externalUserIdentityType.none) {
+                        switch (forwarderSettings.externalUserIdentityType) {
+                            case "CustomerId":
+                                userId = userIdentities.customerid;
+                                break;
+                            case "Other":
+                                userId = userIdentities.other;
+                                break;
+                            case "Other2":
+                                userId = userIdentities.other2;
+                                break;
+                            case "Other3":
+                                userId = userIdentities.other3;
+                                break;
+                            case "Other4":
+                                userId = userIdentities.other4;
+                                break;
+                            case "Other5":
+                                userId = userIdentities.other5;
+                                break;
+                            case "Other6":
+                                userId = userIdentities.other6;
+                                break;
+                            case "Other7":
+                                userId = userIdentities.other7;
+                                break;
+                            case "Other8":
+                                userId = userIdentities.other8;
+                                break;
+                            case "Other9":
+                                userId = userIdentities.other9;
+                                break;
+                            case "Other10":
+                                userId = userIdentities.other10;
+                                break;
+                            default:
+                                console.warn('External identity type not found for setting identity on ' + name + '. User not set. Please double check your implementation.');
                         }
                     }
+                    if (userId) {
+                        if (forwarderSettings.hashUserId == 'True') {
+                            userId = generateHash(userId);
+                        }
+                        if (forwarderSettings.classicMode !== 'True') {
+                            ga(createCmd('set'), 'userId', userId);
+                        }
+                    } else {
+                        console.warn('External identity type of ' + forwarderSettings.externalUserIdentityType + ' not set on the user');
+                    }
+                    
                 }
             }
 
@@ -216,7 +284,7 @@ var mpGoogleAnalyticsKit = (function (exports) {
                 ga(createCmd('ec:addProduct'), productAttrs);
             }
 
-            function addEcommerceProductImpression(product, updatedProductDimentionAndMetrics) {
+            function addEcommerceProductImpression(product, impressionListName, updatedProductDimentionAndMetrics) {
                 var productAttrs = {
                     id: product.Sku,
                     name: product.Name,
@@ -226,6 +294,7 @@ var mpGoogleAnalyticsKit = (function (exports) {
                     price: product.Price,
                     coupon: product.CouponCode,
                     quantity: product.Quantity,
+                    list: impressionListName,
                     type: 'view'
                 };
 
@@ -256,10 +325,11 @@ var mpGoogleAnalyticsKit = (function (exports) {
                 if (event.ProductImpressions) {
                     // Impression event
                     event.ProductImpressions.forEach(function(impression) {
+                        var impressionListName = impression.ProductImpressionList;
                         impression.ProductList.forEach(function(product) {
                             var updatedProductDimentionAndMetrics = {};
                             applyCustomDimensionsMetricsForSourceAttributes(product.Attributes, updatedProductDimentionAndMetrics, productLevelMap);
-                            addEcommerceProductImpression(product, updatedProductDimentionAndMetrics);
+                            addEcommerceProductImpression(product, impressionListName, updatedProductDimentionAndMetrics);
                         });
                     });
 
