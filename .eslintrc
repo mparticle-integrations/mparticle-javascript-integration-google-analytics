@@ -1,10 +1,12 @@
 {
     "env": {
-        "browser": true
+        "browser": true,
+        "node": true
     },
     "globals": {
         "ga": "readonly",
-        "_gaq": "readonly"
+        "_gaq": "readonly",
+        "mParticle": true
     },
     "extends": ["plugin:prettier/recommended", "eslint:recommended"],
     "plugins": ["prettier"],
