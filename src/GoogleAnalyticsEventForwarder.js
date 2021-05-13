@@ -13,7 +13,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-    var kitName = 'GoogleAnalyticsEventForwarder',
+    var name = 'GoogleAnalyticsEventForwarder',
         moduleId = 6,
         version = '2.1.10',
         MessageType = {
@@ -77,7 +77,7 @@
                 customMetrics: {}
             };
 
-        self.name = kitName;
+        self.name = name;
 
         function createTrackerId() {
             return 'mpgaTracker' + trackerCount++;
@@ -205,6 +205,9 @@
         }
 
         function onUserIdentified(user) {
+            if (!user) {
+                return;
+            }
             var userId,
                 userIdentities = user.getUserIdentities().userIdentities;
             if (isInitialized) {
@@ -244,7 +247,7 @@
                             userId = userIdentities.other10;
                             break;
                         default:
-                            console.warn('External identity type not found for setting identity on ' + kitName + '. User not set. Please double check your implementation.')
+                            console.warn('External identity type not found for setting identity on ' + name + '. User not set. Please double check your implementation.')
                     }
                 }
                 if (userId) {
