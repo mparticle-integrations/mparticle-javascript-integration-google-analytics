@@ -1,8 +1,11 @@
 ## Releases
 
-- fix: Set custom dimensions for product impressions
+#### 2.1.11 - 2021-05-13
+-   Send product impression list name
+-   Implement hashUserId and externalUserIdentityType settings
+
 #### 2.1.10 - 2021-04-26
--   Refactor variable declaration for attrName
+-   Fix - Set custom dimensions for product impressions
 
 #### 2.1.9 - 2020-12-10
 -   Refactor variable declaration for attrName
