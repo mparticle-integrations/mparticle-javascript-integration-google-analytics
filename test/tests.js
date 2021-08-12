@@ -347,6 +347,35 @@ describe('Google Analytics Forwarder', function() {
         done();
     });
 
+    it('should set Page, Location, and Hostname if they are all provided via custom flags', function(done) {
+        mParticle.forwarder.process({
+            EventDataType: MessageType.PageView,
+            EventName: 'Test Page Event',
+            EventAttributes: {
+                anything: 'foo',
+            },
+            CustomFlags: {
+                'Google.Page': 'foo page',
+                'Google.Location': 'foo location',
+                'Google.Host': 'foo hostname'
+            },
+        });
+
+        window.googleanalytics.args[0][0].should.equal('tracker-name.set');
+        window.googleanalytics.args[0][1].should.equal('page');
+        window.googleanalytics.args[0][2].should.equal('foo page');
+
+        window.googleanalytics.args[1][0].should.equal('tracker-name.set');
+        window.googleanalytics.args[1][1].should.equal('hostname');
+        window.googleanalytics.args[1][2].should.equal('foo hostname');
+
+        window.googleanalytics.args[2][0].should.equal('tracker-name.set');
+        window.googleanalytics.args[2][1].should.equal('location');
+        window.googleanalytics.args[2][2].should.equal('foo location');
+
+        done();
+    });
+
     it('should log custom dimensions and custom events with an event log', function(done) {
         var event = {
             EventDataType: MessageType.PageEvent,
