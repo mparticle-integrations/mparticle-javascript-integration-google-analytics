@@ -449,17 +449,19 @@
                 _gaq.push(['_trackPageview']);
             }
             else {
-                if (event.CustomFlags && event.CustomFlags[PAGE]) {
-                    ga(createCmd('set'), 'page', event.CustomFlags[PAGE]);
-                }
-                if (event.CustomFlags && event.CustomFlags[HOSTNAME]) {
-                    ga(createCmd('set'), 'hostname', event.CustomFlags[HOSTNAME]);
-                }
-                if (event.CustomFlags && event.CustomFlags[LOCATION]) {
-                    ga(createCmd('set'), 'location', event.CustomFlags[LOCATION]);
-                }
-                if (event.CustomFlags && event.CustomFlags[TITLE]){
-                    ga(createCmd('set'), 'title', event.CustomFlags[TITLE]);
+                if (event.CustomFlags) {
+                    if (event.CustomFlags[PAGE]) {
+                        ga(createCmd('set'), 'page', event.CustomFlags[PAGE]);
+                    }
+                    if (event.CustomFlags[HOSTNAME]) {
+                        ga(createCmd('set'), 'hostname', event.CustomFlags[HOSTNAME]);
+                    }
+                    if (event.CustomFlags[LOCATION]) {
+                        ga(createCmd('set'), 'location', event.CustomFlags[LOCATION]);
+                    }
+                    if (event.CustomFlags[TITLE]){
+                        ga(createCmd('set'), 'title', event.CustomFlags[TITLE]);
+                    }
                 }
                 ga(createCmd('send'), customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'pageview', gaOptionalParameters);
                 sendOptionalUserTimingMessage(event, gaOptionalParameters);
