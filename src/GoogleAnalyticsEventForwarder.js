@@ -449,7 +449,6 @@
                 _gaq.push(['_trackPageview']);
             }
             else {
-                debugger;
                 if (event.CustomFlags && event.CustomFlags[PAGE]) {
                     ga(createCmd('set'), 'page', event.CustomFlags[PAGE]);
                 }
