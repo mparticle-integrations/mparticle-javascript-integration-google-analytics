@@ -47,7 +47,7 @@
         TITLE = 'Google.Title',
         PAGE = 'Google.Page',
         LOCATION = 'Google.Location',
-        HOSTNAME = 'Google.Host',
+        HOSTNAME = 'Google.Hostname',
         VALUE = 'Google.Value',
         USERTIMING = 'Google.UserTiming',
         HITTYPE = 'Google.HitType',

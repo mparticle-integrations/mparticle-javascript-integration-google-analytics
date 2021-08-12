@@ -357,7 +357,7 @@ describe('Google Analytics Forwarder', function() {
             CustomFlags: {
                 'Google.Page': 'foo page',
                 'Google.Location': 'foo location',
-                'Google.Host': 'foo hostname'
+                'Google.Hostname': 'foo hostname'
             },
         });
 
