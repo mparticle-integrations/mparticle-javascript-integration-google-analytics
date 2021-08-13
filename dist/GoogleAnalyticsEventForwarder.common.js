@@ -17,7 +17,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
     var name = 'GoogleAnalyticsEventForwarder',
         moduleId = 6,
-        version = '2.1.11',
+        version = '2.1.12',
         MessageType = {
             SessionStart: 1,
             SessionEnd: 2,
@@ -48,6 +48,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
         LABEL = 'Google.Label',
         TITLE = 'Google.Title',
         PAGE = 'Google.Page',
+        LOCATION = 'Google.Location',
+        HOSTNAME = 'Google.Hostname',
         VALUE = 'Google.Value',
         USERTIMING = 'Google.UserTiming',
         HITTYPE = 'Google.HitType',
@@ -447,11 +449,19 @@ Object.defineProperty(exports, '__esModule', { value: true });
                 _gaq.push(['_trackPageview']);
             }
             else {
-                if (event.CustomFlags && event.CustomFlags[PAGE]) {
-                    ga(createCmd('set'), 'page', event.CustomFlags[PAGE]);
-                }
-                if (event.CustomFlags && event.CustomFlags[TITLE]){
-                    ga(createCmd('set'), 'title', event.CustomFlags[TITLE]);
+                if (event.CustomFlags) {
+                    if (event.CustomFlags[PAGE]) {
+                        ga(createCmd('set'), 'page', event.CustomFlags[PAGE]);
+                    }
+                    if (event.CustomFlags[HOSTNAME]) {
+                        ga(createCmd('set'), 'hostname', event.CustomFlags[HOSTNAME]);
+                    }
+                    if (event.CustomFlags[LOCATION]) {
+                        ga(createCmd('set'), 'location', event.CustomFlags[LOCATION]);
+                    }
+                    if (event.CustomFlags[TITLE]){
+                        ga(createCmd('set'), 'title', event.CustomFlags[TITLE]);
+                    }
                 }
                 ga(createCmd('send'), customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'pageview', gaOptionalParameters);
                 sendOptionalUserTimingMessage(event, gaOptionalParameters);
