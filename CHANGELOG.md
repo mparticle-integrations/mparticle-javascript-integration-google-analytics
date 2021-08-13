@@ -1,5 +1,8 @@
 ## Releases
 
+#### 2.1.12 - 2021-08-12
+-   Fix - Add Location and Hostname to support all GA content information
+
 #### 2.1.11 - 2021-05-13
 -   Send product impression list name
 -   Implement hashUserId and externalUserIdentityType settings
