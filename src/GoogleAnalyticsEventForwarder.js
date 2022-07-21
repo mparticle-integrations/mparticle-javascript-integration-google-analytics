@@ -497,7 +497,7 @@
             if (event.CustomFlags) {
                 var googleCategory = event.CustomFlags[CATEGORY],
                     googleLabel = event.CustomFlags[LABEL],
-                    googleValue = parseInt(event.CustomFlags[VALUE], 10)
+                    googleValue = parseInt(event.CustomFlags[VALUE], 10),
                     googleAction = event.CustomFlags[ACTION];
 
                 if (googleCategory) {
