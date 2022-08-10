@@ -1,5 +1,8 @@
 ## Releases
 
+#### 2.1.13 - 2022-08-10
+ -   Feat - Add custom flag to customize Action
+
 #### 2.1.12 - 2021-08-12
 -   Fix - Add Location and Hostname to support all GA content information
 

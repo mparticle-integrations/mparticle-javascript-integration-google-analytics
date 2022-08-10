@@ -15,7 +15,7 @@
 
     var name = 'GoogleAnalyticsEventForwarder',
         moduleId = 6,
-        version = '2.1.12',
+        version = '2.1.13',
         MessageType = {
             SessionStart: 1,
             SessionEnd: 2,
