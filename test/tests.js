@@ -375,6 +375,26 @@ describe('Google Analytics Forwarder', function() {
 
         done();
     });
+    
+    it('should set Action when provided via custom flags', function(done) {
+        mParticle.forwarder.process({
+            EventDataType: MessageType.PageEvent,
+            EventName: 'Test Page Event',
+            EventAttributes: {
+                anything: 'foo',
+            },
+            CustomFlags: {
+                'Google.Action': 'foo-action',
+            },
+        });
+
+        window.googleanalytics.args[0][0].should.equal('tracker-name.send');
+        window.googleanalytics.args[0][1].should.equal('event');
+        window.googleanalytics.args[0][2].should.equal('Other');
+        window.googleanalytics.args[0][3].should.equal('foo-action');
+
+        done();
+    });
 
     it('should log custom dimensions and custom events with an event log', function(done) {
         var event = {

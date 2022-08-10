@@ -51,6 +51,7 @@
         VALUE = 'Google.Value',
         USERTIMING = 'Google.UserTiming',
         HITTYPE = 'Google.HitType',
+        ACTION = 'Google.Action',
         CONTENTGROUPNUMBER = 'Google.CGNumber',
         CONTENTGROUPVALUE = 'Google.CGValue',
         CONTENTGROUP1 = 'Google.CG1',
@@ -471,7 +472,8 @@
         function logEvent(event, gaOptionalParameters, customFlags) {
             var label = '',
                 category = getEventTypeName(event.EventCategory),
-                value;
+                value,
+                action;
 
             if (event.EventAttributes) {
                 if (event.EventAttributes.label) {
@@ -495,7 +497,8 @@
             if (event.CustomFlags) {
                 var googleCategory = event.CustomFlags[CATEGORY],
                     googleLabel = event.CustomFlags[LABEL],
-                    googleValue = parseInt(event.CustomFlags[VALUE], 10);
+                    googleValue = parseInt(event.CustomFlags[VALUE], 10),
+                    googleAction = event.CustomFlags[ACTION];
 
                 if (googleCategory) {
                     category = googleCategory;
@@ -509,12 +512,16 @@
                 if (googleValue == googleValue) {
                     value = googleValue;
                 }
+
+                if (googleAction && typeof googleAction === 'string') {
+                    action = googleAction;
+                }
             }
 
             if (forwarderSettings.classicMode == 'True') {
                 _gaq.push(['_trackEvent',
                     category,
-                    event.EventName,
+                    action || event.EventName,
                     label,
                     value]);
             }
@@ -522,7 +529,7 @@
                 ga(createCmd('send'),
                     customFlags && customFlags[HITTYPE] ? customFlags[HITTYPE] : 'event',
                     category,
-                    event.EventName,
+                    action || event.EventName,
                     label,
                     value,
                     gaOptionalParameters
