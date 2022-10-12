@@ -9,7 +9,7 @@ On 7/1/2023, Google will sunset its Universal Analytics product which means all 
 
 Google recommends moving from UA to Google Analytics 4 (GA4).  Fortunately, mParticle makes this transition easy for you.  Please see our [GA4 documentation here](https://docs.mparticle.com/integrations/google-analytics-4/event/) for full set up instructions.  Additionally, Google has [migration documentation here](https://support.google.com/analytics/answer/10759417) which may help in your migration to GA4.
 
-If you are brand new to Google Analytics, we recommend you start with GA4 per the instructions above.
+If you are new to Google Analytics, we recommend you start with GA4 per the instructions above.
 
 # License
 
