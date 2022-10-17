@@ -3,9 +3,17 @@
         "browser": true,
         "node": true
     },
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "modules": true
+        }
+    },
     "globals": {
-        "ga": "readonly",
-        "_gaq": "readonly",
+        "ga": true,
+        "_gaq": true,
         "mParticle": true
     },
     "extends": ["plugin:prettier/recommended", "eslint:recommended"],

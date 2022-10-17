@@ -13,7 +13,41 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-    var name = 'GoogleAnalyticsEventForwarder',
+import mParticle = require("@mparticle/web-sdk");
+
+export interface MParticleWebSDK {
+    // addForwarder(mockForwarder: MPForwarder): void;
+    // Identity: SDKIdentityApi;
+    // Logger: SDKLoggerApi;
+    // _Store: SDKStoreApi;
+    // _Helpers: SDKHelpersApi;
+    // config: SDKInitConfig;
+    // _resetForTests(MPConfig: SDKConfig): void;
+    // init(apiKey: string, config: SDKInitConfig, instanceName?: string): void;
+    // getInstance();
+    // ServerModel();
+    // upload();
+    // setPosition(lat: number | string, lng: number | string): void;
+    // logEvent(
+    //     eventName: string,
+    //     eventType?: number,
+    //     attrs?: { [key: string]: string },
+    //     customFlags?: SDKEventCustomFlags
+    // ): void;
+    // logBaseEvent(event: any): void;
+    // eCommerce: any;
+    // logLevel: string;
+    // generateHash(value: string);
+    // isIOS?: boolean;
+}
+
+export interface IGoogleAnalyticsEventForwarder {
+    name: string;
+    init(): void;
+    process(event: any): void | string;
+}
+
+    var moduleName = 'GoogleAnalyticsEventForwarder',
         moduleId = 6,
         version = '2.1.13',
         MessageType = {
@@ -60,7 +94,7 @@
         CONTENTGROUP4 = 'Google.CG4',
         CONTENTGROUP5 = 'Google.CG5';
 
-    var constructor = function() {
+    var constructor = function(this: IGoogleAnalyticsEventForwarder) {
         var self = this,
             isInitialized = false,
             isEnhancedEcommerceLoaded = false,
@@ -80,7 +114,7 @@
                 customMetrics: {}
             };
 
-        self.name = name;
+        self.name = moduleName;
 
         function createTrackerId() {
             return 'mpgaTracker' + trackerCount++;
@@ -91,8 +125,8 @@
             return trackerId + '.' + cmd;
         }
 
-        function getEventTypeName(eventType) {
-            return mParticle.EventType.getName(eventType);
+        function getEventTypeName(eventType: number) {
+            return `${eventType}`;
         }
 
         function formatDimensionOrMetric(attr) {
@@ -193,7 +227,7 @@
                             // ga.js not supported currently
                         }
                         else {
-                            ga(createCmd('set'), 'userId', window.mParticle.generateHash(id));
+                            ga(createCmd('set'), 'userId', generateHash(id));
                         }
                     }
                 }
@@ -204,7 +238,7 @@
         }
 
         function generateHash(id) {
-            return window.mParticle.generateHash(id);
+            return 'this-is-my-hash-' + id;
         }
 
         function onUserIdentified(user) {
@@ -712,8 +746,6 @@
 
         this.init = initForwarder;
         this.process = processEvent;
-        this.setUserIdentity = setUserIdentity;
-        this.onUserIdentified = onUserIdentified;
     };
 
     function getId() {
@@ -736,31 +768,31 @@
         }
 
         if (isObject(config.kits)) {
-            config.kits[name] = {
+            config.kits[moduleName] = {
                 constructor: constructor
             };
         } else {
             config.kits = {};
-            config.kits[name] = {
+            config.kits[moduleName] = {
                 constructor: constructor
             };
         }
         console.log('Successfully registered ' + name + ' to your mParticle configuration');
     }
 
-    if (typeof window !== 'undefined') {
-        if (window && window.mParticle && window.mParticle.addForwarder) {
-            window.mParticle.addForwarder({
-                name: name,
-                constructor: constructor,
-                getId: getId
-            });
-        }
-    }
+    // if (typeof window !== 'undefined') {
+    //     if (window && window.mParticle && window.mParticle.addForwarder) {
+    //         window.mParticle.addForwarder({
+    //             name: name,
+    //             constructor: constructor,
+    //             getId: getId
+    //         });
+    //     }
+    // }
 
-    module.exports = {
-        register: register,
-        getVersion: function() {
-            return version;
-        }
-    };
+    // module.exports = {
+    //     register: register,
+    //     getVersion: function() {
+    //         return version;
+    //     }
+    // };

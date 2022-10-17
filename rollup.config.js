@@ -1,5 +1,9 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
+import typescript from '@rollup/plugin-typescript';
+import commonjs from '@rollup/plugin-commonjs';
+
+const extensions = ['.js', '.ts'];
 
 export default [
     {
@@ -12,10 +16,18 @@ export default [
             strict: false,
         },
         plugins: [
+            babel({
+                extensions,
+                include: ['src/**/*'],
+                babelHelpers: 'runtime',
+            }),
             resolve({
                 browser: true,
             }),
-            commonjs(),
+            commonjs({
+                include: 'node_modules/**',
+            }),
+            typescript({ tsconfig: './tsconfig.json' }),
         ],
     },
     {
@@ -28,6 +40,22 @@ export default [
             strict: false,
         },
         plugins: [
+            babel({
+                extensions,
+                include: ['src/**/*'],
+                babelHelpers: 'runtime',
+                babelrc: false,
+                presets: [
+                    '@babel/preset-typescript',
+                    ['minify', { builtIns: false }],
+                    ['@babel/env', { modules: false }],
+                ],
+                plugins: [
+                    '@babel/proposal-class-properties',
+                    '@babel/proposal-object-rest-spread',
+                    '@babel/plugin-transform-runtime',
+                ],
+            }),
             resolve({
                 browser: true,
             }),
