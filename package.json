@@ -16,7 +16,7 @@
     },
     "devDependencies": {
         "should": "13.2.3",
-        "mocha": "^2.3.2",
+        "mocha": "^10.1.0",
         "chai": "^4.2.0",
         "karma": "^3.1.1",
         "karma-chai": "^0.1.0",
