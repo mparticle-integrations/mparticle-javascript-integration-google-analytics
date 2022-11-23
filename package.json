@@ -18,7 +18,7 @@
         "should": "13.2.3",
         "mocha": "^2.3.2",
         "chai": "^4.2.0",
-        "karma": "^3.1.1",
+        "karma": "^6.4.1",
         "karma-chai": "^0.1.0",
         "karma-chrome-launcher": "^2.2.0",
         "karma-edge-launcher": "^0.4.2",
