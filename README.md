@@ -5,7 +5,11 @@ Google Analytics Javascript integration for mParticle
 ⚠️⚠️⚠️
 
 <b>Google Analytics (Universal Analytics) Sunset Notice<br></b>
-On 7/1/2023, Google will sunset its Universal Analytics product which means all standard Universal Analytics properties will stop processing new hits starting that day.  If you have a Google Analytics 360 property, your data will stop processing new hits on 10/1/2023.  See [Google's official notice](https://support.google.com/analytics/answer/11583528?hl=en) about their plans to sunset Universal Analytics for all details.
+On 7/1/2023, Google will sunset its Universal Analytics product which means all standard Universal Analytics properties will stop processing new hits starting that day.
+
+_If you have a Google Analytics 360 property, your data will stop processing new hits on 10/1/2023._
+
+See [Google's official notice](https://support.google.com/analytics/answer/11583528?hl=en) about their plans to sunset Universal Analytics for all details.
 
 Google recommends moving from UA to Google Analytics 4 (GA4).  Fortunately, mParticle makes this transition easy for you.  Please see our [GA4 documentation here](https://docs.mparticle.com/integrations/google-analytics-4/event/) for full setup instructions.  Additionally, Google has [migration documentation](https://support.google.com/analytics/answer/10759417) which may help in your migration to GA4.
 
