@@ -1,5 +1,9 @@
 ## Releases
 
+#### 2.1.14 - 2023-02-15
+ -   Fix: Add deprecation message for GA Sunset
+       - See Docs for details regarding GA Sunset: https://docs.mparticle.com/integrations/google-analytics/event/
+
 #### 2.1.13 - 2022-08-10
  -   Feat - Add custom flag to customize Action
 
