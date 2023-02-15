@@ -561,6 +561,15 @@
         }
 
         function initForwarder(settings, service, testMode, tid, userAttributes, userIdentities, appVersion, appName, customFlags) {
+            var deprecationMessage = [
+                'Google will sunset its Google Analytics/Unverisal Analytics product on 7/1/2023.' ,
+                'If you see this message, your data will no longer be forwarded to Google after this date.' ,
+                'It is recommended that you migrate from UA to Google Analytics 4 (GA4).',
+                'Please see https://docs.mparticle.com/integrations/google-analytics/event/ for',
+                'more information and necessary upgrade steps to migrate before 7/1/2023.'
+            ].join(' ');
+            console.warn(deprecationMessage);
+
             try {
                 forwarderSettings = settings;
                 reportingService = service;
